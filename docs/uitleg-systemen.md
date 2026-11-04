@@ -2,7 +2,7 @@
 
 Dit document beschrijft stap voor stap wat er gebeurt bij elk van de drie diensten voor studenten. Het is bedoeld om in één keer door te lezen: wat doet de student, wat gaat vanzelf, en wat moeten wij zelf doen.
 
-**Laatst bijgewerkt:** 21 oktober 2026
+**Laatst bijgewerkt:** 4 november 2026
 
 **Houd dit bij.** Verandert er iets aan de werking, dan hoort die wijziging hier meteen in. Dat staat ook als afspraak in CLAUDE.md, in de repo van de website en in die van de WhatsApp-bot, zodat iedereen die met Claude Code aan een van beide werkt dit document bijwerkt in dezelfde beurt als de wijziging zelf.
 
@@ -66,30 +66,34 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 
 ### Waar de events vandaan komen
 
-5. Uit één Google Sheet: **LINKED TO BOT Events Database**. De site leest dat tabblad bij elk bezoek opnieuw, dus wie er iets in zet hoeft niets te pushen en niemand hoeft iets te publiceren.
+5. Uit één Google Sheet: **LINKED TO BOT Events Database**. De site leest dat tabblad bij elk bezoek opnieuw, dus wie er iets in zet hoeft niets te pushen en niemand hoeft iets te publiceren. Sinds 4 november 2026 is dat de versie van contact@. Er staat een oudere sheet met dezelfde naam bij Pim; die wordt niet meer gelezen, dus werk daar niet meer in.
 6. De kolommen die meetellen: Event, Short description, Date, Time, Location, Cost, Registration link en Category.
 7. Zet je **Good to send?** op `No`, dan verdwijnt het event van de site én gaat de bot er niets mee doen. **Leeg laten telt als ja.**
 8. Staan er twee thema's in één cel ("Energy, Governance"), dan pakt de site het eerste. Een onbekend thema belandt onder Algemeen.
 9. Een event waarvan de datum voorbij is, valt vanzelf van de site. Alleen een maand invullen mag ook ("November 2026"), maar dan kan de bot er geen herinnering voor rekenen.
+10. Naast Events heeft de sheet een tabblad per thema: General, Business & Innovation, Ecology & Food, Energy, Governance en Cities. Daarin staan dezelfde events, op datum gesorteerd. Een event met twee thema's staat in beide tabbladen.
+11. Die thematabbladen blijven vanzelf gelijk met Events. Pas je iets aan in Events, dan verandert het in het thematabblad mee. Pas je iets aan in een thematabblad, dan gaat het naar Events en naar het andere thematabblad waar het event eventueel ook staat. Verander je de categorie, dan verhuist het event. Een nieuw event mag je in Events of in een thematabblad typen.
+12. Elk uur, en via het menu **Impact Connect → Alles gelijktrekken**, worden de thematabbladen opnieuw opgebouwd uit Events. Bij twijfel wint Events. Verwijderen doe je daarom in Events: een rij die je alleen uit een thematabblad haalt, komt terug. Wat de bot, Claude of een andere koppeling in de sheet verandert, komt pas bij dat rondje van elk uur in de thematabbladen, dus zet zulke wijzigingen altijd in Events.
 
 ### Wat de bot doet (Impact Radar, draait op Railway)
 
-10. Leest dezelfde sheet en stuurt per event **ongeveer drie weken van tevoren** een herinnering naar de themagroep die bij de categorie hoort, of naar de algemene groep als het thema onbekend is.
-11. Verstuurt alleen op **dinsdag, woensdag en donderdag om 12:50**, Nederlandse tijd. Dat is het lunchmoment, want dan wordt er gelezen.
-12. Reageert iemand met een **duim** op zo'n herinnering, dan krijgt die een privébericht met een agenda-uitnodiging: een Google Agenda-link en een los bestand voor Apple en de rest. De bot onthoudt 120 dagen wie dat al kreeg, zodat niemand het dubbel krijgt, en stuurt er maximaal 150 per dag.
-13. Het **maandoverzicht staat uit sinds 14 oktober 2026**, omdat het team de maand zelf aankondigt met een poster. Weer aanzetten kan in Railway, met de schakelaar SEND_OVERVIEW.
-14. De bot hangt aan een WhatsApp-account op een eigen simkaart. Raakt die verbinding los, dan moet hij opnieuw gekoppeld worden met een QR-code.
+13. Leest dezelfde sheet en stuurt per event **ongeveer drie weken van tevoren** een herinnering naar de themagroep die bij de categorie hoort, of naar de algemene groep als het thema onbekend is.
+14. Verstuurt alleen op **dinsdag, woensdag en donderdag om 12:50**, Nederlandse tijd. Dat is het lunchmoment, want dan wordt er gelezen.
+15. Reageert iemand met een **duim** op zo'n herinnering, dan krijgt die een privébericht met een agenda-uitnodiging: een Google Agenda-link en een los bestand voor Apple en de rest. De bot onthoudt 120 dagen wie dat al kreeg, zodat niemand het dubbel krijgt, en stuurt er maximaal 150 per dag.
+16. Het **maandoverzicht staat uit sinds 14 oktober 2026**, omdat het team de maand zelf aankondigt met een poster. Weer aanzetten kan in Railway, met de schakelaar SEND_OVERVIEW.
+17. De bot hangt aan een WhatsApp-account op een eigen simkaart. Raakt die verbinding los, dan moet hij opnieuw gekoppeld worden met een QR-code.
 
 ### Wat wij zelf doen
 
-15. Events in de sheet zetten en bijhouden: naam, datum, tijd, plek, kosten, aanmeldlink en categorie. Iets niet rondsturen? `No` in Good to send?.
-16. De poster maken voor de maandaankondiging.
-17. Verandert er iets aan de code van de bot, dan is pushen niet genoeg: in **Railway** moet er nog op Deploy geklikt worden.
+18. Events in de sheet zetten en bijhouden: naam, datum, tijd, plek, kosten, aanmeldlink en categorie. Iets niet rondsturen? `No` in Good to send?. Dat mag in Events of in een thematabblad; verwijderen alleen in Events.
+19. De poster maken voor de maandaankondiging.
+20. Verandert er iets aan de code van de bot, dan is pushen niet genoeg: in **Railway** moet er nog op Deploy geklikt worden.
 
 ### Waar het in de code staat
 
 - De site: EVENT_SHEET en EVENT_COLS in data.js en script.js, de pagina zelf is events.html
 - De bot: de map whatsapp-bot, met de instellingen in src/config.js en het rooster in src/scheduler.js
+- De thematabbladen gelijk houden: events-sheet/Gelijktrekken.gs, geplakt in de sheet onder Extensies → Apps Script. Aanzetten met syncInstalleren, uitzetten met syncUitzetten.
 
 ---
 

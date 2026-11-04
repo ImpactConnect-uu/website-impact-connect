@@ -34,6 +34,10 @@ serve.py                 Lokale previewserver (alleen voor ontwikkelen)
 formulier-backend/       Het script achter de twee formulieren (Google Apps
                          Script). Hoort niet op de website, dit draait bij
                          Google. Zie INSTRUCTIES.md in die map.
+events-sheet/            Het script dat de thematabbladen in de sheet LINKED
+                         TO BOT Events Database gelijk houdt met Events.
+                         Gaat niet mee bij een push: je plakt het zelf in de
+                         sheet. Uitleg bovenin Gelijktrekken.gs.
 ```
 
 ---
