@@ -15,6 +15,13 @@
         vangt op wat het script niet ziet: een verwijderde rij, of iets
         wat via een koppeling (de bot, Claude) is veranderd.
 
+     5. Elke rij krijgt dezelfde opmaak: afwisselend lichtgroen en wit,
+        randen, Arial 9, tekst die doorloopt, de naam vet. De kleuren zijn
+        "afwisselende kleuren" van Google zelf, dus een nieuwe rij kleurt
+        vanzelf mee. Plak je iets met een eigen opmaak, dan zet het script
+        die meteen terug. Het filter loopt tot onderaan het tabblad, zodat
+        ook nieuwe events erin vallen.
+
    Bij twijfel wint Events. Verwijderen doe je dus in Events; een rij die je
    alleen uit een categorietabblad haalt komt bij het gelijktrekken terug.
 
@@ -49,6 +56,18 @@ const SYNC_KOP_DATUM     = 'Date';
 
 const SYNC_FUNCTIES = ['syncBijBewerken', 'syncBijOpenen', 'syncGelijktrekken'];
 
+/* De opmaak van de rijen onder de kop, overgenomen van wat er al stond.
+   "vooruit" is hoeveel lege rijen onder het laatste event alvast opgemaakt
+   worden, zodat wat je daar typt of plakt er meteen goed uitziet. */
+const SYNC_OPMAAK = {
+  groen: '#f1f8e9',
+  wit: '#ffffff',
+  rand: '#bdbdbd',
+  letter: 'Arial',
+  grootte: 9,
+  vooruit: 50,
+};
+
 /* ---- eenmalig: de drie triggers zetten ----------------------------- */
 function syncInstalleren() {
   const ss = SpreadsheetApp.getActive();
@@ -78,7 +97,7 @@ function syncBijOpenen() {
 }
 
 function syncNuMetMelding() {
-  SpreadsheetApp.getActive().toast(syncGelijktrekken(), 'Gelijktrekken', 8);
+  SpreadsheetApp.getActive().toast(syncGelijktrekken() + ' Opmaak bijgewerkt.', 'Gelijktrekken', 8);
 }
 
 /* ---- bij elke wijziging -------------------------------------------- */
@@ -88,6 +107,11 @@ function syncBijBewerken(e) {
   const def = syncTabDef(blad.getName());
   if (blad.getName() !== SYNC_HOOFDTAB && !def) return;
   if (e.range.getLastRow() < 2) return;              // alleen de kopregel
+
+  // Eerst de opmaak van wat er net getypt of geplakt is. Die hangt niet af
+  // van de plek van de rij, dus hij klopt ook als de rij straks verschuift.
+  const vanRij = Math.max(2, e.range.getRow());
+  syncOpmaakRijen(blad, vanRij, e.range.getLastRow() - vanRij + 1);
 
   const slot = LockService.getDocumentLock();
   if (!slot.tryLock(25000)) return;                  // het uur-rondje haalt het in
@@ -159,11 +183,16 @@ function syncNaarEvents(e, blad, def) {
 function syncGelijktrekken() {
   const slot = LockService.getDocumentLock();
   if (!slot.tryLock(25000)) return 'Even bezig met iets anders; probeer het zo nog eens.';
+  let uitkomst;
   try {
-    return syncGelijktrekkenBinnenSlot();
+    uitkomst = syncGelijktrekkenBinnenSlot();
   } finally {
     slot.releaseLock();
   }
+  // De opmaak na het slot: die raakt geen inhoud, en zo hoeft niemand die
+  // net iets typt erop te wachten.
+  syncOpmaakAlles();
+  return uitkomst;
 }
 
 function syncGelijktrekkenBinnenSlot() {
@@ -215,6 +244,90 @@ function syncAlleenWaarden(blad, aantal, breedte) {
   if (!aantal) return true;
   return !blad.getRange(2, 1, aantal, breedte).getFormulas()
     .some(function (r) { return r.some(function (f) { return f !== ''; }); });
+}
+
+/* ---- de opmaak ------------------------------------------------------- */
+
+/* Events en alle categorietabbladen. */
+function syncOpmaakAlles() {
+  const ss = SpreadsheetApp.getActive();
+  [SYNC_HOOFDTAB].concat(SYNC_TABS.map(function (d) { return d.tab; })).forEach(function (naam) {
+    const blad = ss.getSheetByName(naam);
+    if (blad) syncOpmaak(blad);
+  });
+}
+
+/* Eén tabblad: de rijen met events plus een stuk lege rijen eronder, de
+   afwisselende kleuren tot onderaan, en het filter tot onderaan. */
+function syncOpmaak(blad) {
+  const breedte = syncKoppen(blad).length;
+  if (!breedte || blad.getMaxRows() < 2) return;
+  const laatste = Math.min(blad.getLastRow() + SYNC_OPMAAK.vooruit, blad.getMaxRows());
+  syncOpmaakRijen(blad, 2, laatste - 1, breedte);
+
+  // Lege rijen alvast als tekst, anders maakt Google van 21-11-2026 een
+  // datum en leest de bot er iets anders in. Gevulde cellen blijven zoals
+  // ze zijn: daar staat de tekst al goed.
+  const leegVanaf = Math.max(blad.getLastRow() + 1, 2);
+  if (leegVanaf <= laatste) blad.getRange(leegVanaf, 1, laatste - leegVanaf + 1, breedte).setNumberFormat('@');
+
+  syncBanding(blad, breedte);
+  syncFilter(blad, breedte);
+}
+
+/* Lettertype, randen en uitlijning. De achtergrond gaat eraf, want de
+   kleuren komen van de afwisselende kleuren; een eigen kleur op een cel
+   zou daar overheen liggen. */
+function syncOpmaakRijen(blad, vanRij, aantal, breedte) {
+  breedte = breedte || syncKoppen(blad).length;
+  if (!breedte || aantal < 1) return;
+  blad.getRange(vanRij, 1, aantal, breedte)
+    .setBackground(null)
+    .setFontFamily(SYNC_OPMAAK.letter)
+    .setFontSize(SYNC_OPMAAK.grootte)
+    .setFontWeight('normal')
+    .setWrap(true)
+    .setVerticalAlignment('middle')
+    .setHorizontalAlignment('left')
+    .setBorder(true, true, true, true, true, true, SYNC_OPMAAK.rand, SpreadsheetApp.BorderStyle.SOLID);
+  blad.getRange(vanRij, 1, aantal, 1).setFontWeight('bold');
+}
+
+/* Afwisselend lichtgroen en wit, van rij 2 tot onderaan. Staat het al zo,
+   dan blijft het staan. */
+function syncBanding(blad, breedte) {
+  const hoogte = blad.getMaxRows() - 1;
+  const bestaand = blad.getBandings();
+  if (bestaand.length === 1) {
+    const r = bestaand[0].getRange();
+    if (r.getRow() === 2 && r.getColumn() === 1 && r.getNumRows() === hoogte
+        && r.getNumColumns() === breedte) return;
+  }
+  bestaand.forEach(function (b) { b.remove(); });
+  blad.getRange(2, 1, hoogte, breedte)
+    .applyRowBanding(SpreadsheetApp.BandingTheme.GREEN, false, false)
+    .setFirstRowColor(SYNC_OPMAAK.groen)
+    .setSecondRowColor(SYNC_OPMAAK.wit);
+}
+
+/* Het filter liep tot rij 54, dus een nieuw event viel erbuiten. Nu tot
+   onderaan, met dezelfde instellingen (bij Events: No verbergen). */
+function syncFilter(blad, breedte) {
+  const filter = blad.getFilter();
+  if (!filter) return;
+  const r = filter.getRange();
+  const hoogte = blad.getMaxRows();
+  const kolommen = Math.max(breedte, r.getLastColumn());
+  if (r.getRow() === 1 && r.getColumn() === 1 && r.getNumRows() === hoogte
+      && r.getNumColumns() === kolommen) return;
+  const criteria = [];
+  for (let c = r.getColumn(); c <= r.getLastColumn(); c++) {
+    const k = filter.getColumnFilterCriteria(c);
+    if (k) criteria.push([c, k]);
+  }
+  filter.remove();
+  const nieuw = blad.getRange(1, 1, hoogte, kolommen).createFilter();
+  criteria.forEach(function (p) { nieuw.setColumnFilterCriteria(p[0], p[1]); });
 }
 
 /* ═══ Hieronder alleen rekenwerk, zonder de sheet aan te raken ═════════ */
