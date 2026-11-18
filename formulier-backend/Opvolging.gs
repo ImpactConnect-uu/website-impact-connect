@@ -7,9 +7,9 @@
         je aangeraden? Eén knop, en op die pagina vink je ze aan;
      2. zodra dat is opgeslagen krijgt de student een mail met het cijfer
         1 tot 5, en daarna de vraag of hij er iets mee gaat doen;
-     3. is er na twee dagen niets vastgelegd, dan krijgen wij een
-        herinnering. Na zeven dagen gaat de mail naar de student sowieso,
-        zonder de zin over de programma's, anders raken we zijn cijfer kwijt;
+     3. is er na vier dagen niets vastgelegd, dan krijgen wij één
+        herinnering. De student krijgt de mail pas als wij hebben ingevuld;
+        vullen wij nooit iets in, dan krijgt hij ook nooit een mail;
      4. dertig dagen na het gesprek vragen we de student wat het geworden is.
 
    Alles komt terecht op de regel van die student in het tabblad met de
@@ -32,8 +32,7 @@ const SITE_ADRES    = 'https://impactconnectutrecht.com';
 const WHATSAPP_LINK = 'https://chat.whatsapp.com/IFJQL3ews8J624ZF2EY42T';
 
 const OPVOLGING_NA_MINUTEN   = 30;   // zo lang na afloop krijgen wij de mail
-const OPVOLGING_HERINNERING  = 2;    // dagen zonder invullen tot de herinnering
-const OPVOLGING_UITERLIJK    = 7;    // dagen tot de student hoe dan ook mailt
+const OPVOLGING_HERINNERING  = 4;    // dagen zonder invullen tot de herinnering
 const OPVOLGING_MAAND        = 30;   // dagen tot "wat is het geworden?"
 const OPVOLGING_STIL_VANAF   = 20;   // 's avonds geen studentmail meer
 const OPVOLGING_STIL_TOT     = 9;    // 's ochtends weer wel
@@ -254,13 +253,13 @@ function stuurHerinnering(regel) {
     subject: 'Reminder: what did you recommend to ' + voornaam(regel.naam) + '?',
     name: 'Website ' + AFZENDERNAAM,
     body: [
-      'Your conversation with ' + tekstOf(regel.naam, 'the student') + ' was two days ago',
+      'Your conversation with ' + tekstOf(regel.naam, 'the student') + ' was four days ago',
       'and the programmes you recommended are not in yet:',
       '',
       link,
       '',
-      'In five days we ask ' + voornaam(regel.naam) + ' how it went anyway, but then',
-      'without mentioning what you talked about.',
+      voornaam(regel.naam) + ' only gets the question how the conversation went once',
+      'you have saved this. This is the only reminder.',
     ].join('\n'),
   });
   opvolgingSchrijf(regel, 'Herinnerd op', opvolgingNu());
@@ -627,8 +626,8 @@ function opvolgingDagelijks() {
         stuurHerinnering(regel);
         return;
       }
-      // 2. de student: zodra wij hebben ingevuld, of uiterlijk na zeven dagen
-      if (!regel.nagevraagdOp && (regel.vastgelegdOp || dagen >= OPVOLGING_UITERLIJK)) {
+      // 2. de student: alleen als wij hebben ingevuld
+      if (!regel.nagevraagdOp && regel.vastgelegdOp) {
         stuurCijferMail(regel);
         return;
       }

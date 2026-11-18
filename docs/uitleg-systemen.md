@@ -2,7 +2,7 @@
 
 Dit document beschrijft stap voor stap wat er gebeurt bij elk van de drie diensten voor studenten. Het is bedoeld om in één keer door te lezen: wat doet de student, wat gaat vanzelf, en wat moeten wij zelf doen.
 
-**Laatst bijgewerkt:** 4 november 2026
+**Laatst bijgewerkt:** 18 november 2026
 
 **Houd dit bij.** Verandert er iets aan de werking, dan hoort die wijziging hier meteen in. Dat staat ook als afspraak in CLAUDE.md, in de repo van de website en in die van de WhatsApp-bot, zodat iedereen die met Claude Code aan een van beide werkt dit document bijwerkt in dezelfde beurt als de wijziging zelf.
 
@@ -31,7 +31,7 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 ### Wat daarna weer automatisch gaat
 
 8. De student krijgt meteen zijn mail: de aangeraden programma's met klikbare namen, de alumni zonder naam (alleen studie en huidige rol, met een knop om een introductie aan te vragen), de losse tip als zin, en vijf knoppen om het gesprek een cijfer te geven. Is het na 20:00 uur, dan gaat de mail de volgende ochtend om 09:00 uur.
-9. Vergeten wij het formulier? Na **twee dagen** komt er een herinnering bij contact@. Na **zeven dagen** krijgt de student de cijfervraag hoe dan ook, maar dan zonder het rijtje programma's.
+9. Vergeten wij het formulier? Na **vier dagen** komt er één herinnering bij contact@. De student krijgt zijn mail pas als wij het formulier hebben opgeslagen. Slaan we het nooit op, dan krijgt hij ook geen cijfervraag en geen mail na dertig dagen.
 10. Klikt hij op een cijfer, dan staat dat meteen vast. Op de pagina die opent kiest hij wat hij ermee gaat doen, kan hij in eigen woorden iets typen, en kan hij een recensie achterlaten voor op de website.
 11. Geeft hij een **1 of een 2**, dan krijgt contact@ diezelfde dag een seintje, zodat we er nog iets mee kunnen.
 12. **Dertig dagen** na het gesprek volgt één laatste mail: *"Did anything come of it?"* met vier knoppen en daarachter een tekstvak.
