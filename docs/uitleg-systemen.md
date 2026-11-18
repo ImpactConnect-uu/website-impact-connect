@@ -61,7 +61,7 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 
 ### Wat de student doet
 
-1. Opent **Events** op de site en ziet alles wat eraan komt, met het aantal erbij. Hij kan filteren op thema: energie, bestuur, ecologie en voedsel, steden, business en innovatie, en algemeen.
+1. Opent **Events** op de site en ziet alles wat eraan komt, met het aantal erbij. Hij kan filteren op thema: energie, bestuur, ecologie en voedsel, steden, business en innovatie, en algemeen. Het event van een partner staat groot bovenaan de pagina en vooraan bij **Coming up** op de homepage, met het label Partner event. Nu is dat het Sustainability Career Event van SustainableMotion.
 2. Klikt op een event en komt op de aanmeldpagina van de organisator. Wij regelen de inschrijving niet; wij brengen het onder de aandacht.
 3. Wordt lid van de **WhatsApp-community** via de knop op die pagina of de QR-code: één algemene groep en vijf themagroepen. Gratis, en je kunt er altijd weer uit.
 4. Mist hij iets, dan stuurt hij het ons via **Tip ons een event**; dat opent een mail naar contact@.
@@ -87,13 +87,14 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 
 ### Wat wij zelf doen
 
-18. Events in de sheet zetten en bijhouden: naam, datum, tijd, plek, kosten, aanmeldlink en categorie. Iets niet rondsturen? `No` in Good to send?. Dat mag in Events of in een thematabblad; verwijderen alleen in Events.
+18. Events in de sheet zetten en bijhouden: naam, datum, tijd, plek, kosten, aanmeldlink en categorie. Iets niet rondsturen? `No` in Good to send?. Dat mag in Events of in een thematabblad; verwijderen alleen in Events. Een event van een partner uitlichten gaat niet via de sheet: die partner moet met de naam van het event in EXTRA_PARTNERS in data.js staan, en daarvoor is een push nodig.
 19. De poster maken voor de maandaankondiging.
 20. Verandert er iets aan de code van de bot, dan is pushen niet genoeg: in **Railway** moet er nog op Deploy geklikt worden.
 
 ### Waar het in de code staat
 
 - De site: EVENT_SHEET en EVENT_COLS in data.js en script.js, de pagina zelf is events.html
+- Partnerevents: EXTRA_PARTNERS in data.js, uitgelicht door paintUitgelicht() in script.js
 - De bot: de map whatsapp-bot, met de instellingen in src/config.js en het rooster in src/scheduler.js
 - De thematabbladen gelijk houden: events-sheet/Gelijktrekken.gs, geplakt in de sheet onder Extensies → Apps Script. Aanzetten met syncInstalleren, uitzetten met syncUitzetten.
 

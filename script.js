@@ -613,11 +613,22 @@ function initListing(key) {
    een Engelse zin dan een leeg kaartje. */
 const evTekst = (ev) => (TAAL === "nl" && ev.descNl) ? ev.descNl : ev.desc;
 
+/* Is dit het event van een partner? Dat staat bij die partner in
+   EXTRA_PARTNERS (data.js), veld event, met dezelfde naam als in de
+   eventsheet. Zo'n event krijgt een label en staat bovenaan. */
+function partnerVanEvent(ev) {
+  const lijst = (typeof EXTRA_PARTNERS !== "undefined" && EXTRA_PARTNERS) || [];
+  const naam = String((ev && ev.name) || "").trim().toLowerCase();
+  return lijst.find((p) => p.event && p.event.trim().toLowerCase() === naam) || null;
+}
+
 function eventCard(ev, isNext) {
   const hasLink = ev.link && ev.link.startsWith("http");
-  return `<div class="ev-card" style="border-left-color:${themeColor(ev.cat)}">
+  const partner = partnerVanEvent(ev);
+  return `<div class="ev-card${partner ? " is-partner" : ""}" style="border-left-color:${partner ? "#D9A441" : themeColor(ev.cat)}">
     <div class="ev-body">
-      <div class="ev-tags">${themePill(ev.cat)}${isNext
+      <div class="ev-tags">${partner
+        ? `<span class="ev-partner">${bridgeMark(13, "#fff")} ${t("ev.partner")} · ${esc(partner.name)}</span>` : ""}${themePill(ev.cat)}${isNext
         ? `<span class="ev-next">${icon("Zap", 12)} ${t("ev.nextup")}</span>` : ""}</div>
       <h4>${esc(ev.name)}</h4>
       ${evTekst(ev) ? `<p>${esc(evTekst(ev))}</p>` : ""}
@@ -738,6 +749,7 @@ function draw() {
 
   paintPicker(perThema, enriched.length);
   paintJoin();
+  paintUitgelicht(enriched);
 
   const zichtbaar = gekozen.size ? enriched.filter((e) => gekozen.has(e.cat)) : enriched;
   paintCount(zichtbaar, enriched.length);
@@ -772,6 +784,30 @@ function paintPicker(perThema, totaal) {
     else gekozen.add(id);
     draw();
   }));
+}
+
+/* Bovenaan de pagina: de events van onze partners, groot en los van het
+   filter, want die hebben we beloofd te promoten. In de tijdlijn eronder
+   staan ze gewoon nog een keer op hun datum, met een label. */
+function paintUitgelicht(lijst) {
+  const host = $("#ev-uitgelicht");
+  if (!host) return;
+  host.innerHTML = lijst.filter((e) => partnerVanEvent(e)).map((e) => {
+    const p = partnerVanEvent(e);
+    const dm = String(e.date).match(/(\d{2})-(\d{2})-(\d{4})/);
+    const hasLink = e.link && e.link.startsWith("http");
+    const info = [e.parsed && e.parsed.display, e.time, e.loc, e.cost].filter(Boolean).map(esc).join(" · ");
+    return `<div class="ev-uitgelicht">
+      ${dm ? `<div class="eu-datum"><b>${parseInt(dm[1])}</b><span>${esc(maandKort(parseInt(dm[2]) - 1))}</span></div>` : ""}
+      <div class="eu-body">
+        <div class="eu-label">${bridgeMark(15, "currentColor")} ${t("ev.partner")} · ${esc(p.name)}</div>
+        <h3>${esc(e.name)}</h3>
+        ${evTekst(e) ? `<p>${esc(evTekst(e))}</p>` : ""}
+        <div class="eu-meta">${info}</div>
+      </div>
+      ${hasLink ? `<a class="eu-knop" href="${esc(e.link)}" target="_blank" rel="noreferrer">${t("ev.aanmelden")} ${icon("ArrowUpRight", 16)}</a>` : ""}
+    </div>`;
+  }).join("");
 }
 
 function paintCount(zichtbaar, totaal) {
@@ -1719,10 +1755,15 @@ async function initHome() {
     const dated = open.filter((e) => !e.parsed.tbc && !e.parsed.yearRound)
       .sort((a, b) => a.parsed.sortKey - b.parsed.sortKey);
     const rest = open.filter((e) => e.parsed.tbc || e.parsed.yearRound);
-    const next = [...dated, ...rest].slice(0, 3);
+    // Events van partners gaan voor, ook als er eerder nog iets anders is:
+    // die hebben we beloofd te promoten.
+    const vanPartners = open.filter((e) => partnerVanEvent(e));
+    const next = [...vanPartners, ...[...dated, ...rest].filter((e) => !vanPartners.includes(e))].slice(0, 3);
     teaser.innerHTML = next.map((ev, i) => {
       const href = ev.link && ev.link.startsWith("http") ? ev.link : "events.html";
-      return `<a class="teaser-card reveal" data-delay="${i * 120}" href="${esc(href)}" target="_blank" rel="noreferrer">
+      const partner = partnerVanEvent(ev);
+      return `<a class="teaser-card reveal${partner ? " is-partner" : ""}" data-delay="${i * 120}" href="${esc(href)}" target="_blank" rel="noreferrer">
+        ${partner ? `<div class="teaser-partner">${bridgeMark(13, "#fff")} ${t("ev.partner")} · ${esc(partner.name)}</div>` : ""}
         <div class="date">${esc(ev.parsed.display)}</div>
         <div class="name">${esc(ev.name)}</div>
         <p>${esc((evTekst(ev) || "").slice(0, 90))}…</p>

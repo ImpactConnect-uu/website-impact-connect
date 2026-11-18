@@ -190,6 +190,8 @@ onderaan elke pagina.
 een event promoten — zet je in `EXTRA_PARTNERS` in `data.js`. Die staan bovenaan
 op `partners.html` en vooraan in de strook. Vul bij `event` de naam van hun event
 in, precies zoals in de eventsheet; datum, tijd en plaats komen daar live uit.
+Dat event staat dan ook uitgelicht bovenaan `events.html`, met een label in de
+tijdlijn, en vooraan bij "Coming up" op de homepage.
 
 Een tabblad toevoegen: open het in de sheet, neem het nummer achter `gid=` uit de
 adresbalk over in `PROGRAMME_SHEETS` en zet de categorie erbij in `PROGRAMME_CATS`

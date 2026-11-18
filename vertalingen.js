@@ -74,6 +74,7 @@ const VERTALINGEN = {
   "partners.intro":     { en: "Ask us for an introduction", nl: "Vraag ons om een introductie" },
   "partners.site":      { en: "Visit website", nl: "Naar de website" },
   "partners.event":     { en: "Upcoming event", nl: "Komend event" },
+  "ev.partner":         { en: "Partner event", nl: "Partnerevent" },
   "partners.event.knop": { en: "Sign up", nl: "Aanmelden" },
   "nav.appointment":   { nl: "Plan een afspraak", en: "Plan an appointment" },
   "nav.menu":         { en: "Open the menu", nl: "Open het menu" },
