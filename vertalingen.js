@@ -80,7 +80,7 @@ const VERTALINGEN = {
   "nav.menu":         { en: "Open the menu", nl: "Open het menu" },
   "nav.uu":            { nl: "Universiteit<br />Utrecht" },
 
-  "footer.blurb":      { nl: "We slaan een brug tussen studenten en kansen, en maken van passie impact nog voordat je afstudeert." },
+  "footer.blurb":      { nl: "Een pad ontstaat door te lopen. Wij helpen je de eerste stap te zetten." },
   "footer.internships": { nl: "Stages" },
   "footer.partner":    { nl: "Partnerstages" },
   "footer.thesis":     { nl: "Afstudeerstages" },
@@ -107,7 +107,7 @@ const VERTALINGEN = {
      het; bovendien klinkt "introductie" alsof je aan iemand wordt voorgesteld,
      terwijl dat lang niet altijd gebeurt (zie stap 03). Het gaat erom dat er
      een mens tegenover je zit die met je meedenkt. */
-  "home.lead":         { nl: "Impact Connect <b>brengt Utrechtse studenten in contact met stages, scripties, programma's, events en alumni.</b> Kijk vrij rond, of kom langs, dan helpen we je persoonlijk verder." },
+  "home.lead":         { nl: "Impact Connect <b>helpt Utrechtse studenten ontdekken wat bij ze past, door het te proberen.</b> Een pad ontstaat door te lopen: zet een eerste stap met een programma, een bijbaan, vrijwilligerswerk of een jongerenorganisatie, en ontdek wat wel en niet bij je past." },
 
   "home.tick.stages":  { nl: "STAGES <i class='brug'></i>" },
   "home.tick.thesis":  { nl: "AFSTUDEERSTAGES <i class='brug'></i>" },
@@ -143,8 +143,8 @@ const VERTALINGEN = {
   "home.events.alle1": { nl: "Bekijk alle" },
   "home.events.alle2": { nl: "events" },
 
-  "home.slot.kop":     { nl: "Het begint<br />als je bij ons <em>aanschuift</em>." },
-  "home.slot.tekst":   { nl: "Kijk zo veel rond als je wilt. En wil je meer dan rondkijken, plan dan een afspraak: een half uur, zonder plan, en we gaan met de hand langs wat bij je past." },
+  "home.slot.kop":     { nl: "Elk pad begint<br />met een <em>eerste stap</em>." },
+  "home.slot.tekst":   { nl: "Kijk zo veel rond als je wilt. En wil je meer dan rondkijken, plan dan een afspraak: een half uur, zonder plan, en samen vinden we een eerste stap die bij je past." },
 
   /* ── events ────────────────────────────────────────────────────
      "Events" laten we staan: dat zegt iedereen zo, en "evenementen"
@@ -209,6 +209,9 @@ const VERTALINGEN = {
   "ab.kop":            { nl: "Over ons<span class=\"dot-clay\">.</span>" },
   "ab.foto":           { nl: "Het team van Impact Connect" },
   "ab.intro1":         { nl: "Impact Connect helpt Utrechtse studenten aan ervaring naast hun studie. Opgezet door studenten en ondersteund door de Universiteit Utrecht zoeken we met de hand stages, afstudeerplekken, events en programma's uit, en gaan we daarna met je om tafel om te kijken welke jouw tijd waard is." },
+  "ab.motto.kop":      { nl: "Een pad ontstaat door te lopen<span class='dot-clay'>.</span>" },
+  "ab.motto.tekst":    { nl: "Wat bij je past, ontdek je zelden door erover na te denken. Je ontdekt het door iets te proberen, te merken wat je energie geeft en wat niet, en van daaruit je volgende stap te kiezen. Een programma, een bijbaan, vrijwilligerswerk of een jongerenorganisatie: elk daarvan is een stap, en elke stap vertelt je iets. Wij helpen je de eerste te zetten." },
+  "ab.motto.bron":     { nl: "Naar een regel van de Spaanse dichter Antonio Machado: <i>se hace camino al andar</i>." },
   "ab.intro2":         { nl: "De meeste studenten weten nog niet wat ze willen doen. Dat is niet iets om eerst uit te zoeken; het is juist de reden om te beginnen, want door het te doen kom je erachter. We vragen dus niet of je met een plan komt. Vertel waar je nieuwsgierig naar bent, dan pakken wij het op." },
   "ab.waarom.kop":     { nl: "Het probleem dat we proberen op te lossen<span class=\"dot-green\">.</span>" },
   "ab.waarom.lead":    { nl: "Ambitie is zelden het probleem bij studenten. Weten wat je ermee moet wel. Vier dingen zitten in de weg." },

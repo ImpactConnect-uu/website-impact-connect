@@ -383,6 +383,9 @@ const MAIL_ALUMNI = [
   'We can introduce you. One click and we\'ll arrange it:',
 ];
 const MAIL_CIJFERVRAAG = 'How was the conversation?';
+// Ons motto als afsluiter; staat ook op de site (homepage, About, voettekst).
+const MAIL_MOTTO = 'Paths are made by walking. Good luck with your first step, '
+  + 'and we hope to hear from you soon.';
 const MAIL_CIJFERUITLEG = [
   'One click, and on the next page you can tell us what you are going to do',
   'with it. 1 means it did not help much, 5 means it really did.',
@@ -419,7 +422,7 @@ function opvolgMailTekst(regel) {
     'Our door stays open: reply to this mail or write to ' + ONTVANGER + '.',
     'You are always welcome to book another conversation: ' + SITE_ADRES,
     '', 'If you still have any questions, please don\'t hesitate to ask them!',
-    '', 'Good luck, and we hope to hear from you soon.',
+    '', MAIL_MOTTO,
     '', 'Warm regards,', d.ondertekening, AFZENDERNAAM,
     '', afmeldRegel(regel.ref));
 
@@ -473,7 +476,7 @@ function opvolgMailHtml(regel) {
     + 'conversation</a>.</p>');
 
   h.push('<p>If you still have any questions, please don&#39;t hesitate to ask them!</p>');
-  h.push('<p>Good luck, and we hope to hear from you soon.</p>');
+  h.push('<p>' + MAIL_MOTTO + '</p>');
   h.push('<p>Warm regards,<br>' + ontsnap(d.ondertekening) + '<br>'
     + ontsnap(AFZENDERNAAM) + '</p>');
   h.push('<p style="' + MAIL_KLEIN + '"><a href="' + ontsnap(d.afmeld) + '" style="'

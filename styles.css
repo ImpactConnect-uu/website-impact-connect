@@ -885,6 +885,16 @@ body::before {
   letter-spacing: -.02em; margin: 48px 0 24px;
 }
 .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+/* Ons motto: een donker blok met de brug erboven, net als het logo. */
+.motto {
+  background: var(--dark); color: #fff; border-radius: 24px; padding: 44px 46px 38px;
+  margin: 56px 0 8px; position: relative; overflow: hidden;
+}
+.motto-mark { color: var(--ochre); margin-bottom: 14px; }
+.about .motto h2 { color: #fff; margin: 0 0 16px; font-size: clamp(28px, 3.6vw, 42px); }
+.motto p { font-size: 16.5px; line-height: 1.7; color: rgba(255,255,255,.82); margin: 0; max-width: 640px; }
+.motto .motto-bron { font-size: 13px; color: rgba(255,255,255,.5); margin-top: 18px; }
+@media (max-width: 700px) { .motto { padding: 32px 24px 28px; } }
 /* Vier kaartjes horen 2x2 te staan, niet 3+1. Dat stond eerst als een inline
    minmax(300px) op de twee plekken waar het voorkomt, maar dat kantelde vanzelf
    naar drie kolommen zodra de pagina breder werd. Nu vastgezet. */
