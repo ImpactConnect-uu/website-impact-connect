@@ -213,6 +213,13 @@ functies uit het bestand dat open staat.
 - `wisAlumniCache`: de lijst op de site meteen verversen.
 - `wisRecensieCache` (in `Opvolging.gs`): hetzelfde voor de recensies, als je
   niet die vijf minuten wilt wachten nadat je "Op de site" op yes hebt gezet.
+- `maandmailEenmalig` (in `Opvolging.gs`): **verstuurt echte mail.** De
+  gesprekken van voor het boekingsformulier staan zonder Ref in de sheet en
+  vallen daardoor buiten de dagelijkse controle. Deze stuurt die studenten
+  alsnog de vraag "wat is eruit gekomen?", maar alleen wie destijds een
+  cijfer gaf en de uitkomst nog niet heeft verteld. Wie hem krijgt, krijgt een
+  Ref en een datum in "Maandmail op", dus een tweede keer draaien stuurt
+  niemand nog iets.
 
 ## Testen zonder echte alumni
 

@@ -1465,3 +1465,47 @@ function opvolgingOverzicht() {
       + '  ' + r.naam + '  → ' + wacht + (opvolgingSlaOver(r) ? '  (overgeslagen)' : ''));
   });
 }
+
+/* ---- eenmalig: de maandmail voor de gesprekken van voor het systeem ---
+   De gesprekken van voor het boekingsformulier staan zonder Ref en zonder
+   "Gesprek op" in de sheet. De dagelijkse controle slaat zulke regels over,
+   dus die studenten hebben de vraag "wat is eruit gekomen?" nooit gehad.
+
+   Deze functie stuurt hem alsnog, maar alleen aan wie destijds wél een
+   cijfer gaf en nog niet heeft verteld wat eruit gekomen is. Wie dat al
+   doorgaf laten we met rust, en zonder mailadres in de sheet kan het niet.
+   De tekst is dezelfde als die van de gewone maandmail.
+
+   Draai hem één keer in de editor, met Opvolging.gs open. Het logboek
+   vertelt daarna wie er een kreeg. Hij mag daarna blijven staan: elke regel
+   die hij meeneemt krijgt een Ref en een datum in "Maandmail op", en
+   daardoor slaat een tweede keer draaien iedereen over.
+   ------------------------------------------------------------------- */
+function maandmailEenmalig() {
+  const verslag = [];
+  metSlot(function () {
+    opvolgingRegels().forEach(function (regel) {
+      // Alleen de oude regels. Een gesprek dat via de site is geboekt heeft
+      // altijd een Ref, en daarvoor loopt de maandmail vanzelf goed.
+      if (regel.ref) return;
+      if (!regel.cijfer) return;          // heeft nooit gereageerd
+      if (regel.uitkomstOp) return;       // heeft de uitkomst al verteld
+      if (regel.maandmailOp) return;      // heeft hem al gehad
+      const wie = regel.naam || 'de regel op rij ' + regel.regel;
+      if (opvolgingSlaOver(regel)) {
+        verslag.push('overgeslagen (geen bruikbaar mailadres of afgemeld): ' + wie);
+        return;
+      }
+      // De knoppen in de mail wijzen met een Ref terug naar deze regel, dus
+      // die moet er staan voordat de mail de deur uit gaat.
+      const ref = 'OUD-' + Utilities.formatDate(opvolgingNu(), TIJDZONE, 'yyyyMMdd')
+        + '-' + regel.regel + '-' + Utilities.getUuid().slice(0, 4);
+      opvolgingSchrijf(regel, 'Ref', ref);
+      regel.ref = ref;
+      stuurMaandMail(regel);
+      verslag.push('verstuurd aan ' + wie);
+    });
+  });
+  console.log(verslag.length ? verslag.join('\n')
+    : 'Niemand. Er is op dit moment niemand die deze eenmalige mail nog hoort te krijgen.');
+}
