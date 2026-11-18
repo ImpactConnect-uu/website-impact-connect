@@ -1499,7 +1499,15 @@ async function initHome() {
   // er met de muis overheen gaat.
   function paintBand(list) {
     if (!band) return;
-    const met = partnersBovenaan(list.filter((p) => programmeLogo(p)));
+    // Elk logo één keer: meerdere programma's van dezelfde organisatie (drie
+    // keer AIESEC) delen een logo, en dan stond hetzelfde plaatje naast elkaar.
+    const gezien = new Set();
+    const met = partnersBovenaan(list.filter((p) => programmeLogo(p))).filter((p) => {
+      const src = programmeLogo(p);
+      if (gezien.has(src)) return false;
+      gezien.add(src);
+      return true;
+    });
     if (!met.length) return;
     // Geen loading="lazy" hier. De browser bepaalt dat aan de hand van waar
     // een plaatje in de layout staat, en de band schuift met transform: een
