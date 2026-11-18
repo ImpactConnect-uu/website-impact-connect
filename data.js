@@ -426,11 +426,14 @@ const PROGRAMME_LOGOS = {
   "Food and Agriculture Organisation of the United Nations":                             "assets/programmes/fao.png",
   "ReWild the Future Challenge":                                                        "assets/programmes/rewild-the-future-challenge.png",
   // Vijf rollen bij dezelfde organisatie, dus vijf keer hetzelfde logo.
-  "GoodShift – Administration & Operations Support":                                     "assets/programmes/goodshift.png",
-  "GoodShift – Acquisition: Schools, Associations & Communities":                        "assets/programmes/goodshift.png",
-  "GoodShift – Charity Support":                                                         "assets/programmes/goodshift.png",
-  "GoodShift – Activation & Campaign Building":                                          "assets/programmes/goodshift.png",
-  "GoodShift – Campaign Promotion / Field Support":                                      "assets/programmes/goodshift.png",
+  "GoodShift – Administration & Operations Support":                                     "assets/programmes/goodshift.svg",
+  "GoodShift – Acquisition: Schools, Associations & Communities":                        "assets/programmes/goodshift.svg",
+  "GoodShift – Charity Support":                                                         "assets/programmes/goodshift.svg",
+  "GoodShift – Activation & Campaign Building":                                          "assets/programmes/goodshift.svg",
+  "GoodShift – Campaign Promotion / Field Support":                                      "assets/programmes/goodshift.svg",
+  // Het echte woordmerk van Soapbox, rechtstreeks van hun site. Witte letters,
+  // dus ook in PROGRAMME_LOGOS_ON_DARK hieronder.
+  "Soapbox Challenges":                                                                  "https://soapbox.nl/images/Soapbox%20gradient%20challenges.png",
   "De Reparatiebalie":                                                                  "assets/programmes/de-reparatiebalie.png",
   "DeGoedeZaak":                                                                        "assets/programmes/degoedezaak.png",
   "Deep Canvassing":                                                                    "assets/programmes/deep-canvassing.png",
@@ -532,7 +535,7 @@ const PROGRAMME_LOGOS = {
 
 /* Logo's die wit zijn (gemaakt voor een donkere achtergrond). Die
    krijgen op het kaartje een donkergroen vlak, anders zie je niets. */
-const PROGRAMME_LOGOS_ON_DARK = ["Ocean Love"];
+const PROGRAMME_LOGOS_ON_DARK = ["Ocean Love", "Soapbox Challenges"];
 
 /* ═══════════════════════════════════════════════════════════════════
    PARTNERS DIE GEEN PROGRAMMA ZIJN

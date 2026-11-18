@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="102 162 451 332" role="img" aria-label="GoodShift">
+  <circle cx="245" cy="217" r="55" fill="#645EF6"/>
+  <circle cx="410" cy="217" r="55" fill="#FC634B"/>
+  <circle cx="245" cy="439" r="55" fill="#645EF6"/>
+  <circle cx="410" cy="439" r="55" fill="#FC634B"/>
+  <rect x="102" y="294" width="246" height="68" rx="34" fill="#645EF6"/>
+  <rect x="307" y="294" width="246" height="68" rx="34" fill="#FC634B"/>
+  <rect x="266" y="294" width="122" height="68" rx="34" fill="#000000"/>
+</svg>
