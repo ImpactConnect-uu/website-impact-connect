@@ -300,7 +300,11 @@ const REVIEWS = [
     // tekst hierboven geknipt. Laat je dit leeg, dan staat er in de hero niets.
     kort: "They listen carefully to what you want and are willing to put in the work to help you achieve your goal.",
     naam: "",
-    rol: "Student, found volunteer work through us",
+    // Gelijk aan de bovenste goedgekeurde regel in het tabblad Recensies.
+    // Houd dat zo: dit citaat staat meteen bovenaan de homepage en wordt
+    // daarna vervangen door wat uit de sheet komt. Verschilt de tekst, dan
+    // zie je hem bij het laden één keer verspringen.
+    rol: "Second year GSS student",
   },
 ];
 

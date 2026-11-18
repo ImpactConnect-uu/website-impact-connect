@@ -1391,13 +1391,28 @@ function initReviews() {
   const vak = $("#reviews-inner");
   if (!sectie || !vak) return;
   const terugval = (typeof REVIEWS === "undefined" ? [] : REVIEWS).filter((r) => r && r.tekst);
+
+  /* Het citaat bovenin zetten we meteen neer, met de recensie uit data.js.
+     Wachten op de sheet duurt een halve seconde tot een paar seconden, en
+     in die tijd zag je bovenaan de homepage een gat dat daarna ineens
+     volschoot. Komt de sheet binnen, dan vervangt die het citaat; is daar
+     niets goedgekeurd, dan verdwijnt het weer.
+     Let op: houd de recensie in REVIEWS in data.js daarom gelijk aan de
+     bovenste goedgekeurde regel in de sheet. Haal je die van de site af,
+     haal hem dan ook hier weg, anders flitst hij nog even voorbij. */
+  if (terugval.length) heroCitaat(terugval[0]);
+
   // null betekent: ophalen mislukt, dan tonen we wat in data.js staat. Een
   // lege lijst betekent: er is niets goedgekeurd, en dan hoort er ook niets
   // te staan.
   haalRecensies().then((uitSheet) => toonReviews(uitSheet === null ? terugval : uitSheet));
 
   function toonReviews(lijst) {
-  if (!lijst.length) return;
+  if (!lijst.length) {
+    const boven = $("#hero-quote");
+    if (boven) boven.hidden = true;
+    return;
+  }
 
   // Het uitgelichte stukje krijgt de accentkleur. Alles gaat eerst door esc(),
   // dus de tekst zelf kan nooit opmaak meebrengen.

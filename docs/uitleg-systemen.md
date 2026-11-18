@@ -40,13 +40,14 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 
 13. Alles landt op dezelfde regel in *aanvragen voor gesprekken*: Teammail op, Aangeraden programma's, Extra tip, Voorgestelde alumni, Vastgelegd op, Nagevraagd op, Cijfer, Vervolg, Toelichting, Maandmail op, Uitkomst en Uitkomst toelichting.
 14. Recensies komen in het tabblad **Recensies**. Ze verschijnen pas op de website nadat iemand van ons in de kolom "Op de site" yes zet.
+15. Bovenaan de homepage staat een kort citaat. Dat staat er meteen, nog voordat de sheet is opgehaald, en komt dan uit `data.js`. Daarna vervangt de sheet het. **Zet je de bovenste recensie in de sheet ooit op "no", haal hem dan ook uit `data.js`**, anders is hij bij het laden nog even te zien.
 
 ### Uitzonderingen die vanzelf goed gaan
 
-15. Haal je de afspraak uit de agenda, dan stopt de hele keten.
-16. Verzet je de afspraak, dan telt alles vanaf de nieuwe datum.
-17. **Een dag of een week dichtzetten doe je in de agenda "Gesprekken".** Alles wat daarin staat blokkeert de uren die het raakt, ook een afspraak van een hele dag of van meerdere dagen. Zet je er één afspraak van 21 december tot en met 2 januari in, dan is die hele periode weg bij de student. Let op: in de gewone agenda van contact@ werkt dat niet. Daar blokkeren alleen afspraken korter dan vier uur, zodat een werksessie van negen tot vijf niet per ongeluk het hele spreekuur wegneemt. Het script kent geen feestdagen en vakanties; die zet je dus zelf dicht.
-18. Elke mail heeft onderaan een link waarmee de student verdere post over dat gesprek stopt. Tussen 20:00 en 09:00 uur versturen we studenten niets.
+16. Haal je de afspraak uit de agenda, dan stopt de hele keten.
+17. Verzet je de afspraak, dan telt alles vanaf de nieuwe datum.
+18. **Een dag of een week dichtzetten doe je in de agenda "Gesprekken".** Alles wat daarin staat blokkeert de uren die het raakt, ook een afspraak van een hele dag of van meerdere dagen. Zet je er één afspraak van 21 december tot en met 2 januari in, dan is die hele periode weg bij de student. Let op: in de gewone agenda van contact@ werkt dat niet. Daar blokkeren alleen afspraken korter dan vier uur, zodat een werksessie van negen tot vijf niet per ongeluk het hele spreekuur wegneemt. Het script kent geen feestdagen en vakanties; die zet je dus zelf dicht.
+19. Elke mail heeft onderaan een link waarmee de student verdere post over dat gesprek stopt. Tussen 20:00 en 09:00 uur versturen we studenten niets.
 
 ### Waar het in de code staat
 
