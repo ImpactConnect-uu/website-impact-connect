@@ -91,12 +91,12 @@ const VERTALINGEN = {
      een mens tegenover je zit die met je meedenkt. */
   "home.lead":         { nl: "Impact Connect <b>brengt Utrechtse studenten in contact met stages, scripties, programma's, events en alumni.</b> Kijk vrij rond, of kom langs, dan helpen we je persoonlijk verder." },
 
-  "home.tick.stages":  { nl: "STAGES <i>✦</i>" },
-  "home.tick.thesis":  { nl: "AFSTUDEERSTAGES <i>✦</i>" },
-  "home.tick.werk":    { nl: "WERKSTUDENTBANEN <i>✦</i>" },
-  "home.tick.prog":    { nl: "PROGRAMMA'S <i>✦</i>" },
-  "home.tick.events":  { nl: "EVENTS <i>✦</i>" },
-  "home.tick.alumni":  { nl: "ALUMNI <i>✦</i>" },
+  "home.tick.stages":  { nl: "STAGES <i class='brug'></i>" },
+  "home.tick.thesis":  { nl: "AFSTUDEERSTAGES <i class='brug'></i>" },
+  "home.tick.werk":    { nl: "WERKSTUDENTBANEN <i class='brug'></i>" },
+  "home.tick.prog":    { nl: "PROGRAMMA'S <i class='brug'></i>" },
+  "home.tick.events":  { nl: "EVENTS <i class='brug'></i>" },
+  "home.tick.alumni":  { nl: "ALUMNI <i class='brug'></i>" },
 
   "home.geen.kop":     { nl: "We zijn geen vacaturebank<span class=\"dot-clay\">.</span>" },
   "home.geen.lead":    { nl: "Impact Connect is een matchingprogramma. Alles op deze site is er om je te laten zien wat er mogelijk is; het echte werk begint zodra je bij ons aanschuift." },

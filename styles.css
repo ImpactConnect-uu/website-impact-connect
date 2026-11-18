@@ -217,7 +217,13 @@ body::before {
   font-family: var(--font-display); font-weight: 500; font-size: 17px;
   font-style: italic; letter-spacing: .5px;
 }
-.ticker span.word i { color: var(--ochre); font-style: normal; }
+/* Tussen de woorden de brug uit ons logo, geen sterretje: dat leest als een
+   AI-logo. Getekend met een masker, zodat de kleur gewoon uit CSS komt. */
+.ticker span.word i.brug {
+  display: inline-block; width: 22px; height: 15px; background: var(--ochre);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 124 82'%3E%3Crect width='124' height='8'/%3E%3Crect x='57.5' y='20.5' width='9' height='4'/%3E%3Cpath d='M4.5 83A57.5 57.5 0 0 1 119.5 83H111A49 49 0 0 0 13 83Z'/%3E%3Crect y='57' width='10' height='25'/%3E%3Crect x='114' y='57' width='10' height='25'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 124 82'%3E%3Crect width='124' height='8'/%3E%3Crect x='57.5' y='20.5' width='9' height='4'/%3E%3Cpath d='M4.5 83A57.5 57.5 0 0 1 119.5 83H111A49 49 0 0 0 13 83Z'/%3E%3Crect y='57' width='10' height='25'/%3E%3Crect x='114' y='57' width='10' height='25'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 
 .marquee { overflow: hidden; white-space: nowrap; display: flex; }
 .marquee-track {
