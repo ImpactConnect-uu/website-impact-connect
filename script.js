@@ -349,7 +349,7 @@ function openPanel(item, mode, accent) {
     : "";
 
   const pills = [
-    isPartner ? pill("★ Partner", "#13352A") : "",
+    isPartner ? pill(`${bridgeMark(14, "#fff")} Partner`, "#13352A") : "",
     isThesis ? (item.thesisType === "defined" ? pill(t("opp.uitgewerkt"), "#2B6B4F") : pill(t("opp.open"), "#7C8C4E")) : "",
     dl.soon ? pill(t("opp.deadline"), "#C00A35") : "",
   ].join("");
@@ -474,7 +474,7 @@ function closePanel() {
 function oppCard(item, accent, mode) {
   const dl = deadlineInfo(item.deadline);
   const pills = [
-    item.kind === "partner" ? pill("★ Partner", "#13352A") : "",
+    item.kind === "partner" ? pill(`${bridgeMark(14, "#fff")} Partner`, "#13352A") : "",
     mode === "thesis" ? (item.thesisType === "defined" ? pill(t("opp.uitgewerkt"), "#2B6B4F") : pill(t("opp.open"), "#7C8C4E")) : "",
     dl.soon ? pill(t("opp.deadline"), "#C00A35") : "",
   ].join("");

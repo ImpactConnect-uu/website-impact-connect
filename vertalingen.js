@@ -371,7 +371,7 @@ const VERTALINGEN = {
   "form.spam.klaar":   { en: "Nothing in your inbox after a few minutes? Check your <strong>spam folder</strong>.",
                          nl: "Na een paar minuten nog niets in je mailbox? Kijk even in je <strong>spam</strong>." },
   "tijd.laden":        { en: "Looking up free times…", nl: "Vrije tijden ophalen…" },
-  "tijd.vol":          { en: "Fully booked", nl: "Vol" },
+  "tijd.vol":          { en: "Not available", nl: "Niet beschikbaar" },
   "tijd.tekort":       { en: "Less than 48 hours away", nl: "Binnen 48 uur" },
   "tijd.geen":         { en: "None of these times work for me", nl: "Geen van deze tijden past" },
   "tijd.geen.uitleg":  { en: "No problem. Send your request and we'll email you to find a time that does.", nl: "Geen probleem. Stuur je aanvraag, dan mailen we je om een moment te vinden dat wel past." },

@@ -679,7 +679,7 @@ const PROGRAMMES_DATA = [
 const FIELD_OPTIONS = ["Energy & climate", "Water & coasts", "Ecology & nature", "Food & agriculture", "Cities & mobility", "Circular economy", "Policy & governance", "Business & innovation", "International development", "Data & GIS"];
 
 const TYPE_OPTIONS = [
-  { id: "unsure", label: "I'm not sure yet", icon: "Sparkles", desc: "Inspire me from your programmes" },
+  { id: "unsure", label: "I'm not sure yet", icon: "Brug", desc: "Inspire me from your programmes" },
   { id: "programme", label: "A programme", icon: "Rocket", desc: "Learn & build my CV" },
   { id: "direction", label: "General direction", icon: "Globe", desc: "Help me find my path" },
   { id: "specific", label: "Something specific", icon: "FileText", desc: "I have an idea in mind" },
