@@ -111,7 +111,9 @@ const VERTALINGEN = {
 
   "home.tick.stages":  { nl: "STAGES <i class='brug'></i>" },
   "home.tick.thesis":  { nl: "AFSTUDEERSTAGES <i class='brug'></i>" },
-  "home.tick.werk":    { nl: "WERKSTUDENTBANEN <i class='brug'></i>" },
+  "home.tick.werk":    { nl: "STUDENTENBANEN <i class='brug'></i>" },
+  "home.tick.vrijwillig": { nl: "VRIJWILLIGERSWERK <i class='brug'></i>" },
+  "home.tick.jeugd":   { nl: "JONGERENORGANISATIES <i class='brug'></i>" },
   "home.tick.prog":    { nl: "PROGRAMMA'S <i class='brug'></i>" },
   "home.tick.events":  { nl: "EVENTS <i class='brug'></i>" },
   "home.tick.alumni":  { nl: "ALUMNI <i class='brug'></i>" },

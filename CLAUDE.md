@@ -83,7 +83,7 @@ Alle drie staan bewust uit. Zet ze alleen om als de gebruiker dat vraagt.
 
 | schakelaar | waar | waarom uit |
 |---|---|---|
-| `INTERNSHIPS_LIVE` | data.js | De Universiteit Utrecht heeft de internships nog niet vrijgegeven. De pagina's zijn af. |
+| `INTERNSHIPS_LIVE` | data.js | De internships hoeven voorlopig niet op de site. Staat hij uit, dan is er niets meer van te zien: geen menu-item, geen kolom in de voettekst, geen blok op de homepage, en de drie pagina's sturen een bezoeker door naar de homepage. De pagina's zelf zijn af en blijven staan; `true` zet alles in één keer terug. Het opruimen doet `verbergInternships()` in script.js. |
 | `UU_BRANDING` | data.js | Nog geen toestemming om het UU-logo te voeren. De regel "Supported by…" in de voettekst blijft wel staan. |
 | `NEDERLANDS_LIVE` | vertalingen.js | De Nederlandse versie is nog niet klaar. De taalknop is verborgen. |
 

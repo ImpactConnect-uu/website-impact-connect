@@ -4,14 +4,21 @@
 /* ── de knop voor de internships ─────────────────────────────────────
    De drie internshippagina's zijn af: de kaarten, de filters, het
    detailpaneel, de zoekfunctie, alles staat er nog precies zoals het
-   gebouwd is. Ze mogen alleen van de Universiteit Utrecht nog niet naar
-   buiten, dus staat deze schakelaar uit. Dan tonen de drie pagina's een
-   "Coming soon" in plaats van de lijst, blijven de knoppen erboven werken,
-   en komen de plekken niet in de zoekbalk (⌘K) of in de teller op de
-   homepage terecht.
+   gebouwd is. Ze hoeven alleen voorlopig niet op de site te staan, dus
+   staat deze schakelaar uit.
 
-   Zodra het mag: zet hier true neer en de hele sectie staat er weer.
-   Verder hoeft er niets veranderd te worden.                          */
+   Staat hij uit, dan ziet een bezoeker er niets meer van:
+     - geen "Internships" in de menubalk en geen kolom in de voettekst;
+     - geen vierde blok op de homepage en geen stagewoorden in de
+       bewegende band;
+     - de plekken staan niet in de zoekbalk (⌘K) en tellen niet mee in de
+       teller op de homepage;
+     - wie toch op internships.html, thesis.html of other-internships.html
+       belandt, gaat door naar de homepage.
+   Dat opruimen doet verbergInternships() in script.js.
+
+   Zodra het weer mag: zet hier true neer en de hele sectie staat er weer,
+   inclusief de teksten. Verder hoeft er niets veranderd te worden.     */
 const INTERNSHIPS_LIVE = false;
 
 /* ── Het UU-logo en de vermelding ────────────────────────────────────

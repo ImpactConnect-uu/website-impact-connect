@@ -2476,9 +2476,63 @@ function openAlumniForm() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   DE INTERNSHIPS UIT DE SITE HALEN
+
+   Zolang INTERNSHIPS_LIVE in data.js uit staat hoort er niets over
+   internships op de site te staan. De pagina's, de kaarten, de filters en
+   het detailpaneel blijven wel gewoon bestaan; hier wordt alleen weggehaald
+   wat een bezoeker ziet. Zet je de schakelaar op true, dan doet deze functie
+   niets meer en staat alles er weer precies zoals het gebouwd is.
+
+   Wat eruit gaat:
+     - elke link naar de drie pagina's: in de menubalk, in de voettekst en
+       het vierde blok op de homepage;
+     - de kolom "Internships" in de voettekst. De link naar Programmes die
+       daarin staat verhuist naar de kolom Explore, zodat die blijft;
+     - de woorden met data-stage in de bewegende band op de homepage.
+   En wie toch op zo'n pagina belandt, via een oude link of een bladwijzer,
+   gaat door naar de homepage.
+   ═══════════════════════════════════════════════════════════════════ */
+const STAGE_PAGINAS = ["internships.html", "thesis.html", "other-internships.html"];
+
+function verbergInternships() {
+  if (INTERNSHIPS_LIVE) return false;
+
+  const hier = (location.pathname.split("/").pop() || "").toLowerCase();
+  if (STAGE_PAGINAS.indexOf(hier) !== -1) {
+    // replace en niet href: dan zet de terugknop je niet weer op deze pagina.
+    location.replace("index.html");
+    return true;
+  }
+
+  STAGE_PAGINAS.forEach((p) => $$(`a[href="${p}"]`).forEach((a) => a.remove()));
+  $$("[data-stage]").forEach((el) => el.remove());
+
+  // In de voettekst blijft nu een kolom over met alleen de kop en de link
+  // naar Programmes. Die link hoort te blijven, de kolom niet.
+  const kolommen = $$(".footer-cols > div");
+  const stageKolom = kolommen.find((k) => $('[data-t="footer.internships"]', k));
+  const ontdek = kolommen.find((k) => $('[data-t="footer.explore"]', k));
+  if (!stageKolom) return false;
+  const prog = $('a[href="programmes.html"]', stageKolom);
+  if (prog && ontdek) {
+    const home = $('a[href="index.html"]', ontdek);
+    if (home) home.insertAdjacentElement("afterend", prog);
+    else ontdek.appendChild(prog);
+  }
+  stageKolom.remove();
+  return false;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    OPSTARTEN
    ═══════════════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
+  // De internships staan uit (zie INTERNSHIPS_LIVE in data.js). Staat iemand
+  // op zo'n pagina, dan gaat hij meteen naar de homepage en hoeft de rest
+  // niet meer te gebeuren.
+  if (verbergInternships()) return;
+
   // De taal als eerste, nog voor er iets getekend wordt: alles wat hierna
   // komt leest TAAL uit en zou anders in het Engels opgebouwd worden.
   pasTaalToe();
