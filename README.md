@@ -19,6 +19,7 @@ events.html              Events
 alumni.html              Ask an alumnus: om een oud-student vragen om mee te praten
 programmes.html          Programmes
 about.html               About us
+partners.html            Our partners (uit de programmasheet en EXTRA_PARTNERS)
 
 styles.css               Ontwerpsysteem: kleuren, layout, animaties
 data.js                  ALLE inhoud: vacatures, events, programma's, partners
@@ -182,6 +183,13 @@ waarmee jullie samenwerken (`ja`, `x` en `true` mogen ook).
 Dat kaartje krijgt dan het groene label PARTNER, komt bovenaan in zijn categorie en
 vooraan in de logoband, en in het venster erachter staat dat wij de student kunnen
 voorstellen. Is de kolom leeg of is er geen kolom, dan verandert er niets.
+Een partner staat ook vanzelf op `partners.html` en in de strook "Our partners"
+onderaan elke pagina.
+
+**Een partner die geen programma is** — bijvoorbeeld een organisatie waarvan we
+een event promoten — zet je in `EXTRA_PARTNERS` in `data.js`. Die staan bovenaan
+op `partners.html` en vooraan in de strook. Vul bij `event` de naam van hun event
+in, precies zoals in de eventsheet; datum, tijd en plaats komen daar live uit.
 
 Een tabblad toevoegen: open het in de sheet, neem het nummer achter `gid=` uit de
 adresbalk over in `PROGRAMME_SHEETS` en zet de categorie erbij in `PROGRAMME_CATS`

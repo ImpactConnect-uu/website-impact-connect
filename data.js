@@ -534,6 +534,28 @@ const PROGRAMME_LOGOS = {
    krijgen op het kaartje een donkergroen vlak, anders zie je niets. */
 const PROGRAMME_LOGOS_ON_DARK = ["Ocean Love"];
 
+/* ═══════════════════════════════════════════════════════════════════
+   PARTNERS DIE GEEN PROGRAMMA ZIJN
+   De meeste partners staan in de programmasheet, met "yes" in de kolom
+   Partner. Een organisatie waarmee we iets anders hebben afgesproken,
+   zoals het promoten van hun event, zet je hier. Deze staan bovenaan op
+   de partnerpagina en in de strook onderaan elke pagina, in deze volgorde.
+
+   event: de naam van het event precies zoals in de eventsheet. De datum,
+   tijd en plaats komen daar live uit; staat het event er niet (meer) in,
+   dan blijft dat blokje gewoon weg.
+   ═══════════════════════════════════════════════════════════════════ */
+const EXTRA_PARTNERS = [
+  {
+    name: "SustainableMotion",
+    logo: "https://www.sustainablemotion.nl/wp-content/themes/sustainablemotion_thema/img/logo.png",
+    logoOnDark: true,       // witte letters: krijgt een donkergroen vlak
+    url: "https://www.sustainablemotion.nl",
+    desc: "Since 2011 SustainableMotion has helped people start and grow a sustainable career, with national career fairs, trainings and network events. For students and starters they organise the Sustainability Career Event, the national career fair for sustainable work.",
+    event: "Sustainability Career Event",
+  },
+];
+
 /* Logo's per instelling. Heeft een programma zelf geen logo, dan kijkt
    de site in de kolom "Host university/institution" van de sheet. Staat
    daar een van de namen hieronder in, dan krijgt het kaartje dat logo.

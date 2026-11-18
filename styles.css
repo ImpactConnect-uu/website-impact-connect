@@ -1213,6 +1213,26 @@ body::before {
 }
 .footer-bottom > :last-child { justify-self: end; }
 .footer-bottom .uu { display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px; color: rgba(255,255,255,.55); }
+/* Partners onderaan elke pagina: witte tegels, want de meeste logo's zijn
+   gemaakt voor een lichte achtergrond en verdwijnen op het donkergroen. */
+.footer-partners { border-top: 1px solid rgba(255,255,255,.12); padding: 26px 0 28px; }
+.footer-partners .head {
+  font-size: 11.5px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase;
+  color: rgba(255,255,255,.45); margin-bottom: 16px;
+}
+.fp-rij { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px; }
+.fp-partner { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; color: rgba(255,255,255,.85); font-size: 14px; font-weight: 600; }
+.fp-logo {
+  width: 46px; height: 46px; border-radius: 12px; background: #fff; display: grid; place-items: center;
+  padding: 7px; box-sizing: border-box; transition: transform .16s ease;
+}
+.fp-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.fp-partner:hover .fp-logo { transform: translateY(-2px); }
+.fp-partner:hover .fp-naam { color: #fff; text-decoration: underline; }
+.fp-meer { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--ochre); font-size: 13.5px; font-weight: 700; text-decoration: none; }
+.fp-meer:hover { text-decoration: underline; }
+@media (max-width: 700px) { .fp-meer { margin-left: 0; flex-basis: 100%; } }
+
 /* Rechtsonder stond "Prototype, placeholder opportunities · real events". Dat
    klopte tijdens het bouwen, maar het is wel het laatste wat een partner of
    iemand van de faculteit leest. Nu staat er het mailadres: een voettekst
@@ -1732,4 +1752,61 @@ body::before {
 .groep-rol .gaan {
   font-size: 13px; font-weight: 700; color: var(--green); white-space: nowrap;
   display: inline-flex; align-items: center; gap: 5px;
+}
+
+/* ═══ PARTNERPAGINA ═══════════════════════════════════════════════ */
+.partner-lijst { display: grid; gap: 18px; }
+.partner-card {
+  display: grid; grid-template-columns: 150px 1fr; gap: 30px; align-items: start;
+  background: #fff; border-radius: 22px; padding: 30px 32px; scroll-margin-top: 100px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04); border-top: 4px solid var(--clay);
+}
+.pc-logo {
+  width: 150px; height: 150px; border-radius: 18px; background: var(--paper); display: grid;
+  place-items: center; padding: 22px; box-sizing: border-box;
+}
+.pc-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.pc-logo.on-dark { background: var(--dark); }
+.fp-logo.on-dark { background: var(--green); }
+.pc-tag {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--dark); color: #fff;
+  font-size: 11px; font-weight: 700; letter-spacing: .3px; padding: 4px 10px; border-radius: 999px;
+}
+.partner-card h2 { font-family: var(--font-display); font-weight: 900; font-size: 28px; margin: 12px 0 10px; color: var(--dark); }
+.pc-tekst { font-size: 15.5px; line-height: 1.62; color: var(--ink); margin: 0 0 16px; max-width: 640px; }
+.pc-rollen { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.pc-rollen button {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--paper); border: 1.5px solid rgba(19,53,42,.12);
+  border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 13.5px; font-weight: 600; color: var(--dark); cursor: pointer;
+}
+.pc-rollen button:hover { border-color: var(--clay); color: var(--clay); }
+.pc-acties { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin-top: 6px; }
+.pc-site { display: inline-flex; align-items: center; gap: 6px; color: var(--dark); font-weight: 700; font-size: 14.5px; text-decoration: none; }
+.pc-site:hover { text-decoration: underline; }
+.partner-leeg { color: var(--muted); font-size: 15px; }
+/* Het event van een partner, op de kaart tussen de tekst en de knoppen. */
+.pc-event {
+  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  background: var(--paper); border-radius: 16px; padding: 16px 18px; margin: 4px 0 20px;
+  border-left: 4px solid var(--ochre);
+}
+.pe-datum {
+  width: 58px; height: 58px; border-radius: 12px; background: var(--dark); color: #fff;
+  display: grid; place-items: center; align-content: center; flex-shrink: 0; line-height: 1;
+}
+.pe-datum b { font-family: var(--font-display); font-size: 24px; font-weight: 900; }
+.pe-datum span { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; margin-top: 3px; }
+.pe-body { flex: 1; min-width: 200px; }
+.pe-kop { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--clay); margin-bottom: 3px; }
+.pe-naam { font-weight: 800; font-size: 16.5px; color: var(--dark); margin-bottom: 3px; }
+.pe-info { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.pe-knop {
+  display: inline-flex; align-items: center; gap: 6px; background: var(--dark); color: #fff;
+  border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 14px; text-decoration: none;
+}
+.pe-knop:hover { background: var(--green); }
+@media (max-width: 700px) {
+  .partner-card { grid-template-columns: 1fr; gap: 18px; padding: 24px 22px; }
+  .pc-logo { width: 96px; height: 96px; padding: 14px; }
+  .partner-card h2 { font-size: 24px; }
 }

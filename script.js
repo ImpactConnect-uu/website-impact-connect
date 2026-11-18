@@ -1344,6 +1344,126 @@ function openProgrammePopup(p) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   PARTNERS: de strook onderaan elke pagina en de pagina partners.html
+
+   Wie partner is, staat op één plek: de kolom "Partner" van de
+   programmasheet. Een organisatie met meerdere rollen (GoodShift) is één
+   partner. Zet je daar "yes" bij een nieuwe organisatie, dan staat die
+   vanzelf in de strook en op de pagina, zonder push.
+   ═══════════════════════════════════════════════════════════════════ */
+let partnersBelofte = null;
+
+/* Alle partners als één lijst van gewone objecten: eerst de partners uit
+   EXTRA_PARTNERS (data.js), daarna die uit de programmasheet. */
+function laadPartners() {
+  if (partnersBelofte) return partnersBelofte;
+  const extra = (typeof EXTRA_PARTNERS !== "undefined" && EXTRA_PARTNERS) || [];
+  partnersBelofte = Promise.all([
+    loadProgrammeSheets().catch(() => null),
+    extra.some((x) => x.event) ? loadEventSheet().catch(() => null) : null,
+  ]).then(([live, events]) => {
+    const vanSheet = groepeerProgrammas((live || []).filter((p) => p.partner)).map((g) => {
+      const leden = g.soort === "groep" ? g.leden : [g.p];
+      const naam = g.soort === "groep" ? g.naam : g.p.name;
+      return {
+        naam, leden,
+        logo: programmeLogo(g.soort === "groep" ? g.logoVan : g.p),
+        donker: logoOnDark(g.soort === "groep" ? g.logoVan : g.p),
+        site: (leden.find((l) => l.url) || {}).url,
+        tekst: leden.length === 1 ? leden[0].desc : "",
+      };
+    });
+    const eigen = extra.map((x) => ({
+      naam: x.name, leden: [], logo: x.logo, donker: !!x.logoOnDark, site: x.url, tekst: x.desc || "",
+      event: x.event ? (events || []).find((e) => e.name.trim().toLowerCase() === x.event.trim().toLowerCase()) : null,
+    }));
+    // Staat een organisatie in allebei, dan telt de versie uit data.js.
+    const al = new Set(eigen.map((x) => progKey(x.naam)));
+    return [...eigen, ...vanSheet.filter((x) => !al.has(progKey(x.naam)))]
+      .map((x) => ({ ...x, anker: progKey(x.naam) }));
+  }).catch(() => []);
+  return partnersBelofte;
+}
+
+async function initPartnerStrook() {
+  const voet = $(".site-footer .footer-bottom");
+  if (!voet) return;
+  const partners = await laadPartners();
+  if (!partners.length) return;                    // geen partners: geen lege strook
+  const strook = document.createElement("div");
+  strook.className = "footer-partners";
+  strook.innerHTML = `
+    <div class="head">${t("partners.voet.kop")}</div>
+    <div class="fp-rij">
+      ${partners.map((x) => `<a class="fp-partner" href="partners.html#${x.anker}">
+          <span class="fp-logo${x.donker ? " on-dark" : ""}">${x.logo ? `<img src="${esc(x.logo)}" alt="" loading="lazy">` : bridgeMark(24)}</span>
+          <span class="fp-naam">${esc(x.naam)}</span></a>`).join("")}
+      <a class="fp-meer" href="partners.html">${t("partners.voet.meer")} ${icon("ArrowRight", 14)}</a>
+    </div>`;
+  voet.parentNode.insertBefore(strook, voet);
+}
+
+// Het event van een partner: een datumblokje, de gegevens en een knop.
+function partnerEvent(e) {
+  const d = parseEventDate(e.date);
+  const dm = String(e.date).match(/(\d{2})-(\d{2})-(\d{4})/);
+  const blok = dm
+    ? `<div class="pe-datum"><b>${parseInt(dm[1])}</b><span>${esc(maandKort(parseInt(dm[2]) - 1))}</span></div>`
+    : `<div class="pe-datum">${icon("Calendar", 22)}</div>`;
+  const info = [d.display, e.time, e.loc, e.cost].filter(Boolean).map(esc).join(" · ");
+  return `<div class="pc-event">
+    ${blok}
+    <div class="pe-body">
+      <div class="pe-kop">${t("partners.event")}</div>
+      <div class="pe-naam">${esc(e.name)}</div>
+      <div class="pe-info">${info}</div>
+    </div>
+    ${e.link ? `<a class="pe-knop" href="${esc(e.link)}" target="_blank" rel="noreferrer">${t("partners.event.knop")} ${icon("ArrowUpRight", 14)}</a>` : ""}
+  </div>`;
+}
+
+async function initPartnersPagina() {
+  const host = $("#partner-lijst");
+  if (!host) return;
+  const partners = await laadPartners();
+  if (!partners.length) {
+    host.innerHTML = `<p class="partner-leeg">${t("partners.leeg")}</p>`;
+    return;
+  }
+  host.innerHTML = partners.map((x) => {
+    const rollen = x.leden.length > 1
+      ? `<p class="pc-tekst">${esc(t("partners.rollen").replace("{n}", x.leden.length))}</p>
+         <div class="pc-rollen">${x.leden.map((l, n) =>
+           `<button type="button" data-lid="${n}">${esc(rolUit(l.name, x.naam))} ${icon("ArrowRight", 13)}</button>`).join("")}</div>`
+      : "";
+    return `<article class="partner-card reveal" id="${x.anker}">
+      <div class="pc-logo${x.donker ? " on-dark" : ""}">${x.logo ? `<img src="${esc(x.logo)}" alt="${esc(x.naam)}" loading="lazy">` : bridgeMark(40)}</div>
+      <div class="pc-body">
+        <span class="pc-tag">${bridgeMark(14, "#fff")} Partner</span>
+        <h2>${esc(x.naam)}</h2>
+        ${x.tekst ? `<p class="pc-tekst">${esc(x.tekst)}</p>` : ""}
+        ${rollen}
+        ${x.event ? partnerEvent(x.event) : ""}
+        <div class="pc-acties">
+          <button type="button" class="btn-mag primary" data-partner-afspraak>${bridgeMark(20, "currentColor")} ${t("partners.intro")}</button>
+          ${x.site ? `<a class="pc-site" href="${esc(x.site)}" target="_blank" rel="noreferrer">${t("partners.site")} ${icon("ArrowUpRight", 14)}</a>` : ""}
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+
+  // Een rol aanklikken opent hetzelfde venster als op de programmapagina.
+  $$(".partner-card", host).forEach((kaart, i) => {
+    $$("[data-lid]", kaart).forEach((knop) =>
+      knop.addEventListener("click", () => openProgrammePopup(partners[i].leden[Number(knop.dataset.lid)])));
+  });
+  $$("[data-partner-afspraak]", host).forEach((b) => b.addEventListener("click", openForm));
+  initReveal(host);
+  // Kwam je via de strook onderaan binnen, spring dan naar die partner.
+  if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: "start" });
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    PARTNERMUUR (home)
    ═══════════════════════════════════════════════════════════════════ */
 function initWall() {
@@ -2402,6 +2522,8 @@ document.addEventListener("DOMContentLoaded", () => {
   else if (page === "feedback") initOpvolging();
   else if (page === "team") initTeamformulier();
   else if (page === "rating") initVragenlijst();
+  else if (page === "partners") initPartnersPagina();
+  if (page !== "partners") initPartnerStrook();
 
   // ?check=taal in de adresbalk somt in de console op wat nog geen
   // Nederlands heeft. Voor onszelf, een bezoeker merkt er niets van.

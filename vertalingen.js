@@ -58,6 +58,23 @@ const VERTALINGEN = {
   "nav.alumni":        { nl: "Vraag het een alumni" },
   "nav.internships":   { nl: "Stages" },
   "nav.about":         { nl: "Over ons" },
+  "nav.partners":      { nl: "Partners" },
+
+  // Partners: de pagina partners.html en de strook onderaan elke pagina.
+  // Wat script.js zelf maakt heeft en: én nl nodig, anders staat er "null".
+  "partners.kop":       { nl: "Onze partners<i>.</i>" },
+  "partners.lead":      { nl: "Organisaties waar we rechtstreeks mee samenwerken. Zie je iets dat bij je past? We stellen je persoonlijk voor, zodat je niet zomaar een sollicitatie op de stapel bent." },
+  "partners.org.kop":   { nl: "Zelf partner worden?" },
+  "partners.org.tekst": { nl: "Ben je een organisatie die gemotiveerde Utrechtse studenten wil ontmoeten? Stuur ons een bericht, dan hoor je per mail van ons." },
+  "partners.org.knop":  { nl: "Neem contact op" },
+  "partners.voet.kop":  { en: "Our partners", nl: "Onze partners" },
+  "partners.voet.meer": { en: "Meet our partners", nl: "Maak kennis" },
+  "partners.leeg":      { en: "Our partners will be listed here soon.", nl: "Hier staan binnenkort onze partners." },
+  "partners.rollen":    { en: "{n} roles you can do through us:", nl: "{n} rollen die je via ons kunt doen:" },
+  "partners.intro":     { en: "Ask us for an introduction", nl: "Vraag ons om een introductie" },
+  "partners.site":      { en: "Visit website", nl: "Naar de website" },
+  "partners.event":     { en: "Upcoming event", nl: "Komend event" },
+  "partners.event.knop": { en: "Sign up", nl: "Aanmelden" },
   "nav.appointment":   { nl: "Plan een afspraak", en: "Plan an appointment" },
   "nav.menu":         { en: "Open the menu", nl: "Open het menu" },
   "nav.uu":            { nl: "Universiteit<br />Utrecht" },
