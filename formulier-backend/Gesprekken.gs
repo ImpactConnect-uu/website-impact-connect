@@ -34,11 +34,11 @@ const TIJDZONE = 'Europe/Amsterdam';
    "wie" komt in de titel van de afspraak. Op woensdag is een van de twee er;
    wie het gesprek doet zet zijn naam er zelf in. */
 const SPREEKUUR = [
-  { dag: 2, van: 9,  tot: 17, wie: 'Zoya' },
-  { dag: 3, van: 15, tot: 17, wie: 'Zoya/Noah' },
-  { dag: 4, van: 13, tot: 17, wie: 'Noah' },
+  { dag: 2, van: 10, tot: 17, wie: 'Noah' },
+  { dag: 3, van: 13, tot: 17, wie: 'Zoya/Noah' },
+  { dag: 5, van: 10, tot: 17, wie: 'Zoya' },
 ];
-const SPREEKUUR_WEKEN = 3;           // zoveel hele weken ziet een student
+const SPREEKUUR_WEKEN = 6;           // zoveel hele weken ziet een student
 const SPREEKUUR_MINIMAAL_UUR = 48;   // zo kort van tevoren op z'n vroegst
 const SPREEKUUR_MAX_PER_DAG = 3;     // meer gesprekken op één dag kan niet
 const GESPREK_MINUTEN = 45;
@@ -145,7 +145,7 @@ function gesprekBlokkades(agenda, van, tot) {
    Geeft alle spreekuurdagen van SPREEKUUR_WEKEN hele weken terug, met per
    dag de vrije sloten. De eerste week is de eerste waarin na de 48 uur nog
    iets te kiezen valt. Dagen die al te dichtbij zijn blijven erin staan,
-   zodat een student altijd drie keer dezelfde drie dagen ziet.
+   zodat een student in elke week dezelfde drie dagen ziet.
    ------------------------------------------------------------------- */
 function gesprekDagen(nu, agenda) {
   const vroegst = nu.getTime() + SPREEKUUR_MINIMAAL_UUR * 3600000;

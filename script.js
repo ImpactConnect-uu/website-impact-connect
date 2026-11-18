@@ -1803,8 +1803,14 @@ const VELD_ANDERS = "Something else";
 
 function openForm() {
   if ($("#form-root")) return;
-  const steps = ["afspr.stap1", "afspr.stap2", "afspr.stap3", "afspr.staptijd", "afspr.stap4"].map(t);
-  const data = { types: [], fields: [], fieldOther: "", level: "", commit: "", paid: "", lang: "", slot: "", name: "", email: "", notes: "" };
+  /* Hier stond eerst een stap "What brings you here?" vooraan, en bij het
+     praktische stuk ook "Your experience level" en "Time you can commit".
+     Die zijn eruit: ze kostten de student klikken en wij vroegen er in het
+     gesprek toch naar. De kolommen Looking for, Experience level en Time
+     they can commit blijven wel in de sheet staan (leeg), want hernoemen of
+     weghalen van een kolomkop breekt het wegschrijven. */
+  const steps = ["afspr.stap2", "afspr.stap3", "afspr.staptijd", "afspr.stap4"].map(t);
+  const data = { fields: [], fieldOther: "", paid: "", lang: "", slot: "", name: "", email: "", notes: "" };
   let step = 0, done = false, sending = false, viaMail = false;
 
   // Tijdsloten. tijden: undefined = nog aan het laden, null = ophalen
@@ -1826,7 +1832,7 @@ function openForm() {
     // Lukt het ophalen niet, dan kan de student toch verder en mailen wij.
     if (!antw && !data.slot) data.slot = "geen";
   }
-  haalTijden().then((antw) => { zetTijden(antw); if (step === 3 && !done) render(); });
+  haalTijden().then((antw) => { zetTijden(antw); if (step === 2 && !done) render(); });
 
   const datumTekst = (d, opties) => d.toLocaleDateString(locale, opties);
   const weekTekst = (w) => {
@@ -1851,26 +1857,18 @@ function openForm() {
   wrap.id = "form-root";
   document.body.appendChild(wrap);
 
-  const canNext = () => step === 0 ? data.types.length > 0
-    : step === 1 ? data.fields.length > 0
+  const canNext = () => step === 0 ? data.fields.length > 0
       && (!data.fields.includes(VELD_ANDERS) || !!data.fieldOther.trim())
-    : step === 3 ? !!data.slot
-    : step === 4 ? !!(data.name && data.email) : true;
-
-  // de keuzes uit stap 1 staan als id in data; in de mail en de sheet
-  // hoort het label te staan waar de student op geklikt heeft
-  const labelVan = (id) => (TYPE_OPTIONS.find((t) => t.id === id) || {}).label || id;
+    : step === 2 ? !!data.slot
+    : step === 3 ? !!(data.name && data.email) : true;
 
   const payload = () => ({
     formulier: "afspraak",
     naam: data.name.trim(),
     email: data.email.trim(),
-    zoekt: data.types.map(labelVan),
     // In de mail en de sheet hoort te staan wat iemand zelf heeft ingevuld,
     // niet het woord "Something else".
     themas: data.fields.map((f) => (f === VELD_ANDERS && data.fieldOther.trim() ? data.fieldOther.trim() : f)),
-    niveau: data.level,
-    tijd: data.commit,
     betaald: data.paid,
     taal: data.lang,
     tijdslot: data.slot && data.slot !== "geen" ? data.slot : "",
@@ -1883,10 +1881,7 @@ function openForm() {
     const p = payload();
     return [
       "APPOINTMENT REQUEST",
-      `Looking for: ${p.zoekt.join(", ")}`,
       `Themes: ${p.themas.join(", ")}`,
-      p.niveau ? `Experience level: ${p.niveau}` : null,
-      p.tijd ? `Time they can commit: ${p.tijd}` : null,
       p.betaald ? `Paid or unpaid: ${p.betaald}` : null,
       p.taal ? `Language: ${p.taal}` : null,
       `Time slot: ${p.tijdslotTekst}`,
@@ -1902,14 +1897,6 @@ function openForm() {
 
   function bodyFor() {
     if (step === 0) {
-      return `<div class="type-grid">${TYPE_OPTIONS.map((o) => `
-        <button type="button" class="type-card${data.types.includes(o.id) ? " on" : ""}" data-type="${o.id}">
-          <span class="badge">${icon(o.icon, 18, { color: data.types.includes(o.id) ? "#fff" : "#888" })}</span>
-          <div class="lbl">${esc(t(`soort.${o.id}`) || o.label)}</div>
-          <div class="sub">${esc(t(`soort.${o.id}.sub`) || o.desc)}</div>
-        </button>`).join("")}</div>`;
-    }
-    if (step === 1) {
       // "Something else" staat achteraan en opent een tekstvak. Zonder die
       // uitweg moet iemand met een vakgebied dat er niet bij staat iets kiezen
       // wat hij niet bedoelt, en dan klopt de match die wij maken niet.
@@ -1922,13 +1909,11 @@ function openForm() {
             <input id="f-fieldother" placeholder="${esc(t("afspr.anders.hint"))}" value="${esc(data.fieldOther)}">
           </div>` : ""}`;
     }
-    if (step === 2) {
+    if (step === 1) {
       const group = (key, label, opts) => `<div><label>${esc(label)}</label><div class="chip-row">${
         opts.map((o) => `<button type="button" class="chip${data[key] === o ? " on" : ""}" data-set="${key}" data-val="${esc(o)}">${esc(keuzeLabel(o))}</button>`).join("")
       }</div></div>`;
       return `<div class="field-stack">
-        ${group("level", t("afspr.niveau"), ["Beginner", "Some experience", "Advanced"])}
-        ${group("commit", t("afspr.tijd"), ["A few hrs/week", "1 day/week", "2–3 days/week", "Full-time"])}
         ${/* Hier stond eerst "Paid only / Either is fine / Doesn't matter".
               "Doesn't matter" betekende hetzelfde als "Either is fine" en is
               eruit; "Unpaid only" is erbij gekomen, want er zijn studenten
@@ -1937,7 +1922,7 @@ function openForm() {
         ${group("lang", t("afspr.taal"), ["English", "Dutch", "Either"])}
       </div>`;
     }
-    if (step === 3) {
+    if (step === 2) {
       const week = weken[weekNr];
       const weg = slotWeg ? `<p class="tijd-weg">${t("tijd.weg")}</p>` : "";
       if (tijden === undefined) return `${weg}<p class="tijd-info">${t("tijd.laden")}</p>`;
@@ -2018,11 +2003,6 @@ function openForm() {
   function bind() {
     $$("[data-close]", wrap).forEach((el) => el.addEventListener("click", () => wrap.remove()));
 
-    $$("[data-type]", wrap).forEach((b) => b.addEventListener("click", () => {
-      const id = b.dataset.type;
-      data.types = data.types.includes(id) ? data.types.filter((x) => x !== id) : [...data.types, id];
-      render();
-    }));
     const anders = $("#f-fieldother", wrap);
     if (anders) anders.addEventListener("input", () => {
       data.fieldOther = anders.value;
@@ -2080,7 +2060,7 @@ function openForm() {
           zetTijden(antw.tijden && antw.tijden.ok ? antw.tijden : tijden);
           data.slot = "";
           slotWeg = true;
-          step = 3;
+          step = 2;
           render();
           return;
         }

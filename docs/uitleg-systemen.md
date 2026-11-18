@@ -14,8 +14,8 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 
 ### Wat de student doet
 
-1. Klikt op **Plan an appointment** en doorloopt vijf stappen: wat brengt je hier, je interesses, wat praktisch past (ervaring, tijd, betaald of niet, taal), een moment kiezen, en je gegevens.
-2. Kiest een tijdslot uit het vaste rooster: **dinsdag 9 tot 17 uur (Zoya), woensdag 15 tot 17 uur (een van ons twee), donderdag 13 tot 17 uur (Noah)**. Hij ziet drie weken vooruit, kan niet binnen 48 uur boeken, en er passen maximaal drie gesprekken op één dag. Een slot is een heel uur; het gesprek duurt 45 minuten, in **The Playground in Building VMC**.
+1. Klikt op **Plan an appointment** en doorloopt vier stappen: je interesses, wat praktisch past (betaald of niet, taal), een moment kiezen, en je gegevens.
+2. Kiest een tijdslot uit het vaste rooster: **dinsdag 10 tot 17 uur (Noah), woensdag 13 tot 17 uur (een van ons twee), vrijdag 10 tot 17 uur (Zoya)**. Hij ziet zes weken vooruit, kan niet binnen 48 uur boeken, en er passen maximaal drie gesprekken op één dag. Een slot is een heel uur en het laatste begint om 16:00; het gesprek duurt 45 minuten, in **The Playground in Building VMC**.
 3. Past er niets, dan kiest hij "None of these times work for me". Dan nemen wij zelf contact op om een moment te zoeken.
 
 ### Wat er automatisch gebeurt
@@ -45,11 +45,12 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 
 15. Haal je de afspraak uit de agenda, dan stopt de hele keten.
 16. Verzet je de afspraak, dan telt alles vanaf de nieuwe datum.
-17. Elke mail heeft onderaan een link waarmee de student verdere post over dat gesprek stopt. Tussen 20:00 en 09:00 uur versturen we studenten niets.
+17. **Een dag of een week dichtzetten doe je in de agenda "Gesprekken".** Alles wat daarin staat blokkeert de uren die het raakt, ook een afspraak van een hele dag of van meerdere dagen. Zet je er één afspraak van 21 december tot en met 2 januari in, dan is die hele periode weg bij de student. Let op: in de gewone agenda van contact@ werkt dat niet. Daar blokkeren alleen afspraken korter dan vier uur, zodat een werksessie van negen tot vijf niet per ongeluk het hele spreekuur wegneemt. Het script kent geen feestdagen en vakanties; die zet je dus zelf dicht.
+18. Elke mail heeft onderaan een link waarmee de student verdere post over dat gesprek stopt. Tussen 20:00 en 09:00 uur versturen we studenten niets.
 
 ### Waar het in de code staat
 
-- Het rooster, de 48 uur, de drie weken en het maximum per dag: formulier-backend/Gesprekken.gs
+- Het rooster, de 48 uur, de zes weken en het maximum per dag: formulier-backend/Gesprekken.gs
 - De hele nazorg, de mails en de pagina's erachter: formulier-backend/Opvolging.gs
 - Het boekingsformulier op de site: script.js
 
