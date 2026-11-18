@@ -1111,7 +1111,7 @@ body::before {
   position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
   width: min(440px, 92vw); background: var(--paper); border-radius: 24px;
   box-shadow: 0 30px 80px rgba(0,0,0,.35); z-index: 130; overflow: hidden;
-  animation: pop .22s cubic-bezier(.2,.8,.3,1);
+  animation: popMidden .22s cubic-bezier(.2,.8,.3,1);
 }
 .prog-pop .head { background: var(--green); color: #fff; padding: 26px 28px 22px; position: relative; overflow: hidden; }
 .prog-pop .head .ghost { position: absolute; right: -20px; bottom: -28px; opacity: .14; }
@@ -1137,7 +1137,7 @@ body::before {
   position: fixed; top: 14vh; left: 50%; transform: translateX(-50%);
   width: min(580px, 94vw); background: #fff; border-radius: 18px;
   box-shadow: 0 30px 80px rgba(0,0,0,.35); z-index: 90; overflow: hidden;
-  animation: pop .2s cubic-bezier(.2,.8,.3,1);
+  animation: popBoven .2s cubic-bezier(.2,.8,.3,1);
 }
 .cmdk-input { display: flex; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #F0F0F0; }
 .cmdk-input input { border: none; outline: none; font-size: 16px; font-family: inherit; flex: 1; background: transparent; }
@@ -1222,6 +1222,10 @@ body::before {
 @keyframes slidein { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes fade    { from { opacity: 0; } to { opacity: 1; } }
 @keyframes pop     { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+/* Voor vensters die met transform in het midden staan: de verschuiving moet in
+   de animatie mee, anders begint het venster rechtsonder en springt het daarna. */
+@keyframes popMidden { from { transform: translate(-50%, -50%) scale(.94); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@keyframes popBoven  { from { transform: translateX(-50%) scale(.94); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
 @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
