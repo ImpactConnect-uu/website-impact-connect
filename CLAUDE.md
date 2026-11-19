@@ -185,7 +185,7 @@ alleen met het team en publiceer ze nooit.
 
 | tabblad | wat erin komt |
 |---|---|
-| aanvragen voor gesprekken | Het afspraakformulier. Status en Contact person houden jullie zelf bij; het script laat die kolommen met rust. |
+| aanvragen voor gesprekken | Het afspraakformulier. Status en Contact person houden jullie zelf bij; het script laat die kolommen met rust. **Laat de kolom Ref staan**: daar hangen alle knoppen in de mails aan. Raakt hij toch weg, dan zet het script hem vanzelf terug vanaf de afspraak in de agenda. |
 | Alumni introducties | Het alumniloket: per aanvraag de vraag, de drie kandidaten, wie we kozen, en drie weken later het cijfer en de toelichting van de student. |
 | Alumni die we nog missen | Het formulier onder de lijst, voor als er niemand past. Dit is de wervingslijst. |
 | Berichten | Het contactformulier. Verschijnt bij het eerste bericht. |
@@ -213,6 +213,14 @@ functies uit het bestand dat open staat.
 - `wisAlumniCache`: de lijst op de site meteen verversen.
 - `wisRecensieCache` (in `Opvolging.gs`): hetzelfde voor de recensies, als je
   niet die vijf minuten wilt wachten nadat je "Op de site" op yes hebt gezet.
+- `herstelKenmerken` (in `Opvolging.gs`): zet kenmerken terug die uit de
+  kolom **Ref** zijn weggeraakt, bijvoorbeeld doordat een regel met de hand
+  is overgetypt. Hij haalt ze van de afspraak in de agenda, vult alleen lege
+  cellen, verzint nooit een nieuw kenmerk en verandert niets in de agenda.
+  Een naam die twee keer in de sheet staat slaat hij over. **Draait sinds
+  november 2026 elke ochtend vanzelf**, als eerste stap van
+  `opvolgingDagelijks`; met de hand draaien hoeft alleen als je niet tot de
+  volgende ochtend wilt wachten.
 - `maandmailEenmalig` (in `Opvolging.gs`): **verstuurt echte mail.** De
   gesprekken van voor het boekingsformulier staan zonder Ref in de sheet en
   vallen daardoor buiten de dagelijkse controle. Deze stuurt die studenten

@@ -144,12 +144,56 @@ function opvolgingSchrijf(regel, naam, waarde) {
   regel.blad.getRange(regel.regel, k + 1).setValue(waarde);
 }
 
+/* De regel bij een kenmerk. Staat het kenmerk niet (meer) in de sheet, dan
+   kijken we in de agenda: daar staat het óók op de afspraak. Vinden we hem
+   daar, dan zetten we hem terug in de sheet en gaat het gewoon door. Zo valt
+   een student nooit op een kapotte link doordat de kolom Ref is weggeraakt,
+   bijvoorbeeld doordat een regel met de hand is overgetypt. */
 function opvolgingZoek(ref) {
   const schoon = String(ref || '').trim();
   if (!schoon) return null;
   const regels = opvolgingRegels();
   for (let i = 0; i < regels.length; i++) if (regels[i].ref === schoon) return regels[i];
-  return null;
+  return kenmerkTerugUitAgenda(schoon, regels);
+}
+
+/* Dit draait alleen als een kenmerk niet in de sheet staat, dus zelden. Gaat
+   er iets mis bij de agenda, dan geven we gewoon null terug: dan ziet de
+   student dezelfde melding als voorheen, maar valt er nooit een formulier om. */
+function kenmerkTerugUitAgenda(ref, regels) {
+  let afspraken;
+  try {
+    const agenda = gesprekAgenda();
+    if (!agenda) return null;
+    const nu = new Date();
+    afspraken = agenda.getEvents(new Date(nu.getTime() - 365 * 86400000),
+      new Date(nu.getTime() + 62 * 86400000));
+  } catch (err) { console.error(err); return null; }
+
+  const passend = afspraken.filter(function (e) { return e.getTag('ref') === ref; });
+  if (passend.length !== 1) return null;
+
+  const afspraak = passend[0];
+  const titel = String(afspraak.getTitle() || '');
+  const kandidaten = regels.filter(function (r) {
+    return !r.ref && r.naam && titel.indexOf(r.naam) !== -1;
+  });
+  if (kandidaten.length !== 1) {
+    console.log('Kenmerk ' + ref + ' hoort bij "' + titel + '", maar daar is geen'
+      + ' enkele regel zonder kenmerk bij aan te wijzen.');
+    return null;
+  }
+
+  const regel = kandidaten[0];
+  opvolgingSchrijf(regel, 'Ref', ref);
+  if (!(regel.gesprekOp instanceof Date)) {
+    opvolgingSchrijf(regel, 'Gesprek op', afspraak.getStartTime());
+    regel.gesprekOp = afspraak.getStartTime();
+  }
+  regel.ref = ref;
+  console.log('Kenmerk ' + ref + ' stond niet meer in de sheet en is teruggezet op rij '
+    + regel.regel + '.');
+  return regel;
 }
 
 /* ---- kleine hulpjes -------------------------------------------------- */
@@ -615,6 +659,11 @@ function opvolgingKwartier() {
 
 /* ---- en wat Google elke ochtend om 09:00 doet ------------------------ */
 function opvolgingDagelijks() {
+  // Eerst kijken of er ergens een kenmerk is weggeraakt. Zonder kenmerk doet
+  // een regel hieronder niet mee, en dan krijgt die student stilletjes geen
+  // enkele mail meer. Dit staat bewust vóór metSlot: twee sloten over elkaar
+  // heen loopt vast.
+  herstelKenmerken(false);
   metSlot(function () {
     opvolgingRegels().forEach(function (regel) {
       if (!regel.ref || opvolgingSlaOver(regel)) return;
@@ -1511,4 +1560,90 @@ function maandmailEenmalig() {
   });
   console.log(verslag.length ? verslag.join('\n')
     : 'Niemand. Er is op dit moment niemand die deze eenmalige mail nog hoort te krijgen.');
+}
+
+/* ---- een zoekgeraakt kenmerk terugzetten -----------------------------
+   De knoppen in de mails wijzen met het kenmerk (de kolom Ref) terug naar
+   de regel in de sheet. Raakt dat kenmerk weg, bijvoorbeeld doordat een
+   regel met de hand opnieuw is ingetypt, dan vindt het script de regel niet
+   meer en krijgt de student "This link no longer works" te zien.
+
+   Het kenmerk staat gelukkig twee keer: ook op de afspraak in de agenda
+   "Gesprekken". Deze functie zoekt per regel zonder kenmerk de afspraak op
+   naam op en zet het kenmerk terug in de sheet. Daarmee gaat de link uit de
+   mail die al verstuurd is gewoon weer werken.
+
+   Veilig om te draaien: hij vult alleen lege cellen, verzint nooit een nieuw
+   kenmerk en verandert niets in de agenda. Staat er bij een naam meer dan
+   één afspraak, of geen, dan slaat hij die regel over en zegt dat erbij.
+   ------------------------------------------------------------------- */
+function herstelKenmerken(melden) {
+  // Zonder argument (dus met de hand in de editor) vertelt hij altijd wat hij
+  // heeft gedaan. Het dagelijkse rondje geeft false mee en blijft dan stil
+  // zolang er niets te herstellen viel.
+  const praat = melden !== false;
+  const agenda = gesprekAgenda();
+  if (!agenda) { console.log('Geen agenda "' + AGENDA_NAAM + '" gevonden.'); return; }
+
+  const alle = opvolgingRegels();
+  // Staat een naam twee keer in de sheet, dan is op naam zoeken niet
+  // betrouwbaar: dan weten we niet welke regel bij welke afspraak hoort.
+  const hoeVaak = {};
+  alle.forEach(function (r) { if (r.naam) hoeVaak[r.naam] = (hoeVaak[r.naam] || 0) + 1; });
+  // En een kenmerk dat al ergens in gebruik is, mag er nooit nog een keer bij.
+  const bezet = {};
+  alle.forEach(function (r) { if (r.ref) bezet[r.ref] = r.regel; });
+
+  const regels = alle.filter(function (r) { return !r.ref && r.naam; });
+  if (!regels.length) {
+    if (praat) console.log('Elke regel met een naam heeft al een kenmerk.');
+    return;
+  }
+
+  // Ruim venster: een half jaar terug tot een maand vooruit.
+  const nu = opvolgingNu();
+  const afspraken = agenda.getEvents(new Date(nu.getTime() - 183 * 86400000),
+    new Date(nu.getTime() + 31 * 86400000));
+
+  let hersteld = 0;
+  metSlot(function () {
+    regels.forEach(function (regel) {
+      const passend = afspraken.filter(function (e) {
+        return String(e.getTitle() || '').indexOf(regel.naam) !== -1;
+      });
+      if (!passend.length) return;                     // de meesten: nooit via de site geboekt
+      if (hoeVaak[regel.naam] > 1) {
+        console.log(regel.naam + ' (rij ' + regel.regel + '): staat meer dan een keer in de'
+          + ' sheet, dus ik weet niet welke afspraak erbij hoort. Zet het kenmerk met de hand.');
+        return;
+      }
+      if (passend.length > 1) {
+        console.log(regel.naam + ': meer dan een afspraak in de agenda, niet aan te wijzen.');
+        return;
+      }
+      const e = passend[0];
+      const ref = e.getTag('ref');
+      if (!ref) {
+        console.log(regel.naam + ': de afspraak van ' + gesprekTekst(e.getStartTime())
+          + ' heeft zelf ook geen kenmerk. De oude link is niet meer te redden;'
+          + ' die student heeft een nieuwe mail nodig.');
+        return;
+      }
+      if (bezet[ref]) {
+        console.log(regel.naam + ': kenmerk ' + ref + ' staat al op rij ' + bezet[ref]
+          + '. Niets gedaan, want twee regels met hetzelfde kenmerk loopt mis.');
+        return;
+      }
+      opvolgingSchrijf(regel, 'Ref', ref);
+      if (!(regel.gesprekOp instanceof Date)) opvolgingSchrijf(regel, 'Gesprek op', e.getStartTime());
+      bezet[ref] = regel.regel;
+      hersteld++;
+      console.log(regel.naam + ': kenmerk ' + ref + ' teruggezet ('
+        + gesprekTekst(e.getStartTime()) + '). De link uit de mail werkt weer.');
+    });
+  });
+  // Dit draait ook elke ochtend vanzelf, en dan hoeft er niets in het logboek
+  // te komen als er niets aan de hand was.
+  if (hersteld) console.log(hersteld + ' regel(s) hersteld.');
+  else if (praat) console.log('Niets hersteld. Zie de regels hierboven, of er was niets te herstellen.');
 }
