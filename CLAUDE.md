@@ -131,6 +131,14 @@ contact@impactconnectutrecht.com.
 - De hook zet een gewijzigd `.gs`-bestand bij een push vanzelf bij Google
   (met `formulier-backend/uitrollen.js`) en stopt de push als dat mislukt,
   zodat de site nooit live gaat terwijl de oude backend nog draait.
+- **Let op: het uitrollen kijkt naar de map, niet naar git.** `uitrollen.js`
+  stuurt élk `.gs`-bestand dat in `formulier-backend/` staat naar Google, ook
+  eentje dat nog niet gecommit is. Werkt de ander in dezelfde map aan een
+  nieuw stuk backend, dan gaat dat bij jouw push mee de lucht in, ook al staat
+  het niet in jouw commit. Kijk dus vóór een push met `git status` of er
+  `.gs`-bestanden openstaan die niet van jou zijn, en zeg het als dat zo is.
+  Voor de site zelf speelt dit niet: GitHub Pages zet alleen neer wat
+  gecommit is.
 - **Eenmalig per computer**, door de gebruiker zelf in de terminal, want
   daarbij opent een browser om in te loggen met het contact@-account:
   ```
