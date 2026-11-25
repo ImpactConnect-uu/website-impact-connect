@@ -227,7 +227,7 @@ const LINKEDIN_IMPACT_CONNECT = "https://www.linkedin.com/company/impact-connect
 const LINKEDIN_TEAM = {
   "Valentijn Roorda": "https://www.linkedin.com/in/valentijn-roorda-934735239/",
   "Zoya Frumau":      "https://www.linkedin.com/in/zoya-frumau-4980a334a/",
-  "Noah van Sprang":  "",   // heeft geen LinkedIn; blijft dus zonder icoontje
+  "Noah van Sprang":  "https://www.linkedin.com/in/noah-van-sprang-6712a2437/",
   "Jouke Nabuurs":    "https://www.linkedin.com/in/jouke-nabuurs/",
 };
 
@@ -558,8 +558,13 @@ const PROGRAMME_LOGOS_ON_DARK = ["Ocean Love", "Soapbox Challenges"];
 const EXTRA_PARTNERS = [
   {
     name: "SustainableMotion",
-    logo: "https://www.sustainablemotion.nl/wp-content/themes/sustainablemotion_thema/img/logo.png",
-    logoOnDark: true,       // witte letters: krijgt een donkergroen vlak
+    /* Het logo dat zij ons zelf hebben gestuurd, bij ons in de map in plaats
+       van van hun website geplukt: dan verdwijnt het niet als zij hun site
+       verbouwen. Er is ook een witte versie voor een donkere ondergrond,
+       assets/partners/sustainablemotion-wit.png. Die gebruiken we nu nergens,
+       want elk logovlak op de site is licht. Allebei staan ze in de Drive van
+       Impact Connect, bij Promotions. */
+    logo: "assets/partners/sustainablemotion.png",
     url: "https://www.sustainablemotion.nl",
     desc: "Since 2011 SustainableMotion has helped people start and grow a sustainable career, with national career fairs, trainings and network events. For students and starters they organise the Sustainability Career Event, the national career fair for sustainable work.",
     event: "Sustainability Career Event",
