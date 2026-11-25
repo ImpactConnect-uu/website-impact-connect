@@ -350,10 +350,15 @@ function verhaalVerstuurd() {
   } catch (e) { return {}; }
 }
 
+/* Iemand die het aanmeldformulier twee keer invulde staat er twee keer in,
+   met hetzelfde mailadres en dus hetzelfde id. Die krijgt de mail één keer. */
 function verhaalWachtrij() {
   const al = verhaalVerstuurd();
+  const gehad = {};
   return leesAlumni().filter(function (a) {
-    return !a.test && geldigMailadres(a.mail) && !al[a.id];
+    if (a.test || !geldigMailadres(a.mail) || al[a.id] || gehad[a.id]) return false;
+    gehad[a.id] = true;
+    return true;
   });
 }
 
