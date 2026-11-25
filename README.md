@@ -20,6 +20,8 @@ alumni.html              Ask an alumnus: om een oud-student vragen om mee te pra
 programmes.html          Programmes
 about.html               About us
 partners.html            Our partners (uit de programmasheet en EXTRA_PARTNERS)
+paths.html               Alumniverhalen: hoe ziet het werk er echt uit (nog niet in het menu)
+verhaal.html             Het formulier voor alumni, alleen via hun persoonlijke link
 
 styles.css               Ontwerpsysteem: kleuren, layout, animaties
 data.js                  ALLE inhoud: vacatures, events, programma's, partners
