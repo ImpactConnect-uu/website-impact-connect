@@ -3639,7 +3639,7 @@ const ALUMNI_VRAGEN = [
   { id: "leuk", kop: "You'll enjoy this if…",
     vraag: "What do you really have to enjoy to do this work well and have fun doing it?" },
   { id: "niet", kop: "Probably not for you if…",
-    vraag: "What kind of people would this work not suit?" },
+    vraag: "What kind of personality would not fit this job?" },
   { id: "tips", kop: "Tips",
     vraag: "Any other tips, or anything else you'd like to share about this job?" },
 ];

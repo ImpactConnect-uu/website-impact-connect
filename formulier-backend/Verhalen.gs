@@ -262,70 +262,60 @@ function verhaalMailDelen(a) {
   return { voornaam: toonNaam(a.volledigeNaam) || 'there', gegevens: gegevens, link: verhaalLink(a) };
 }
 
+/* De tekst van de mail, in alinea's. Zo staat hij maar op één plek en
+   kunnen de kale en de opgemaakte versie niet uit elkaar gaan lopen. */
+const VERHAAL_TEKST = {
+  dank: 'Thank you again for joining the Impact Connect alumni network. Because of you, '
+    + 'students in Utrecht can talk to someone who has already walked the path they are curious about.',
+  resultaat: 'In the last three months, we connected more than 20 students to sustainable '
+    + 'opportunities! We are very happy with that, and we keep looking for what we can do better. '
+    + 'One thing we noticed: students still hesitate to reach out to alumni, even when those '
+    + 'alumni have very relevant experience.',
+  vraag: 'That\'s why we would like to ask: would you be open to answering a few questions about '
+    + 'your work, so we can publish them on our website? Answer as many or as few as you like. '
+    + 'Even one answer helps, and you won\'t have to repeat anything you already told us.',
+  bekend: 'In our previous form you told us:',
+  bijwerken: 'Is something no longer up to date? You can change it at the top of the form.',
+  knop: 'Answer the questions',
+  privacy: 'We only publish your answers without your name and without the name of your '
+    + 'employer, and only if you say yes in the form. You can ask us to take them down at any time.',
+  motto: 'Paths are made by walking. Thank you for helping students take their first step.',
+};
+
 function verhaalMailTekst(a) {
   const d = verhaalMailDelen(a);
-  const r = [
-    'Dear ' + d.voornaam + ',',
-    '',
-    'Thank you again for joining the Impact Connect alumni network. Because of you,',
-    'students in Utrecht can talk to someone who has already walked the path they',
-    'are curious about.',
-    '',
-    'Many students have no idea what a job like yours actually looks like: what a',
-    'week is like, how much you work with people, and how you got there. We would',
-    'love to share that on our website, anonymously, so more students get a feel',
-    'for it.',
-  ];
+  const t = VERHAAL_TEKST;
+  const r = ['Dear ' + d.voornaam + ',', '', t.dank, '', t.resultaat, '', t.vraag];
   if (d.gegevens.length) {
-    r.push('', 'In our previous form you told us:');
+    r.push('', t.bekend);
     d.gegevens.forEach(function (g) { r.push(' * ' + g[0] + ': ' + g[1]); });
+    r.push('', t.bijwerken);
   }
-  r.push('',
-    'Would you be open to answering a few questions about this work? Answer as many',
-    'or as few as you like. Even one answer helps, and you won\'t have to repeat',
-    'anything you already told us.',
-    '',
-    'Answer the questions: ' + d.link,
-    '',
-    'Is something above out of date? You can correct it at the top of the form.',
-    '',
-    'We only publish your answers without your name and without the name of your',
-    'employer, and only if you say yes in the form. You can ask us to take them',
-    'down at any time.',
-    '',
-    'Paths are made by walking. Thank you for helping students take their first step.',
-    '',
-    'Warm regards,',
-    'The Impact Connect team');
+  r.push('', t.knop + ': ' + d.link, '', t.privacy, '', t.motto, '',
+    'Warm regards,', 'The Impact Connect team');
   return r.join('\n');
 }
 
 function verhaalMailHtml(a) {
   const d = verhaalMailDelen(a);
+  const t = VERHAAL_TEKST;
+  const p = function (s) { return '<p>' + ontsnap(s) + '</p>'; };
   const h = ['<div style="' + MAIL_BLAD + '">'];
   h.push('<p>Dear ' + ontsnap(d.voornaam) + ',</p>');
-  h.push('<p>Thank you again for joining the Impact Connect alumni network. Because of you, '
-    + 'students in Utrecht can talk to someone who has already walked the path they are curious about.</p>');
-  h.push('<p>Many students have no idea what a job like yours actually looks like: what a week is '
-    + 'like, how much you work with people, and how you got there. We would love to share that on '
-    + 'our website, anonymously, so more students get a feel for it.</p>');
+  h.push(p(t.dank), p(t.resultaat), p(t.vraag));
   if (d.gegevens.length) {
-    h.push('<p style="margin-bottom:6px">In our previous form you told us:</p>');
+    h.push('<p style="margin-bottom:6px">' + ontsnap(t.bekend) + '</p>');
     h.push('<ul style="padding-left:20px;margin:0 0 16px">');
     d.gegevens.forEach(function (g) {
       h.push('<li><b>' + ontsnap(g[0]) + ':</b> ' + ontsnap(g[1]) + '</li>');
     });
     h.push('</ul>');
+    h.push(p(t.bijwerken));
   }
-  h.push('<p>Would you be open to answering a few questions about this work? Answer as many or as '
-    + 'few as you like. Even one answer helps, and you won&#39;t have to repeat anything you already told us.</p>');
   h.push('<p style="margin:22px 0"><a href="' + ontsnap(d.link) + '" style="display:inline-block;'
     + 'background:#C2683A;color:#fff;text-decoration:none;font-weight:700;padding:12px 22px;'
-    + 'border-radius:10px">Answer the questions</a></p>');
-  h.push('<p>Is something above out of date? You can correct it at the top of the form.</p>');
-  h.push('<p>We only publish your answers without your name and without the name of your employer, '
-    + 'and only if you say yes in the form. You can ask us to take them down at any time.</p>');
-  h.push('<p>Paths are made by walking. Thank you for helping students take their first step.</p>');
+    + 'border-radius:10px">' + ontsnap(t.knop) + '</a></p>');
+  h.push(p(t.privacy), p(t.motto));
   h.push('<p>Warm regards,<br>The Impact Connect team</p>');
   h.push('</div>');
   return h.join('');
