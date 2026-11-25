@@ -136,6 +136,10 @@ function doPost(e) {
     // van de opvolging: geen kenmerk, geen agenda, en nooit een mail terug.
     if (d.formulier === 'vragenlijst') return vragenlijstOpslaan(d);
 
+    // De vragen over hun werk die alumni via verhaal.html beantwoorden; zie
+    // Verhalen.gs. Werkt alleen met de persoonlijke link uit hun mail.
+    if (d.formulier === 'alumniverhaal') return verhaalOpslaan(d);
+
     if (d.formulier === 'gesprekteam') return opvolgingTeamOpslaan(d);
     if (d.formulier === 'gesprekcijfer') return opvolgingTekstOpslaan(d);
     if (d.formulier === 'gesprekuitkomst') return opvolgingUitkomstOpslaan(d);
@@ -252,6 +256,15 @@ function doGet(e) {
     return ContentService.createTextOutput(recensiesJson(p.vers === '1'))
       .setMimeType(ContentService.MimeType.JSON);
   }
+
+  // De alumniverhalen; zie Verhalen.gs. De lijst is wat iedereen op de site
+  // ziet (goedgekeurd en anoniem); ?verhaal= is de persoonlijke link van één
+  // alumnus en geeft terug wat we al van hem weten.
+  if (p.lijst === 'verhalen') {
+    return ContentService.createTextOutput(verhalenJson(p.vers === '1'))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  if (p.verhaal) return antwoord(verhaalOpzet(p.verhaal));
 
   // De knoppen uit de mails na een gesprek; zie Opvolging.gs.
   if (p.gteam) return opvolgingTeamPagina(p.gteam);

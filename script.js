@@ -2618,6 +2618,8 @@ document.addEventListener("DOMContentLoaded", () => {
   else if (page === "team") initTeamformulier();
   else if (page === "rating") initVragenlijst();
   else if (page === "partners") initPartnersPagina();
+  else if (page === "verhaal") initVerhaal();
+  else if (page === "paths") initPaths();
   if (page !== "partners") initPartnerStrook();
 
   // ?check=taal in de adresbalk somt in de console op wat nog geen
@@ -3612,6 +3614,221 @@ function initVragenlijst() {
       });
     });
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ALUMNIVERHALEN: verhaal.html (het formulier) en paths.html (de verhalen)
+
+   De zes vragen staan hier. De backend (formulier-backend/Verhalen.gs)
+   kent ze bij hun id en schrijft elk antwoord in een eigen kolom. Verander
+   je een id, verander hem dan daar ook.
+
+   Lokaal kijken zonder backend: zet ?voorbeeld=1 achter het adres. Dat werkt
+   alleen op je eigen computer, niet op impactconnectutrecht.com, zodat er
+   nooit voorbeeldverhalen op de echte site staan.
+   ═══════════════════════════════════════════════════════════════════ */
+const ALUMNI_VRAGEN = [
+  { id: "dag", kop: "A typical day",
+    vraag: "What does an average working day look like?",
+    hint: "How flexible is it, how much contact with people do you have, and what do you actually spend your time on?" },
+  { id: "pad", kop: "How I got here",
+    vraag: "How did you get here, and what mattered to you in ending up in this job?",
+    hint: "Think of activities beside your studies, how you explored your options, internships, or detours along the way." },
+  { id: "skills", kop: "Skills I use and learned",
+    vraag: "Which skills do you use most in your work, and which new ones have you picked up in this job?" },
+  { id: "leuk", kop: "You'll enjoy this if…",
+    vraag: "What do you really have to enjoy to do this work well and have fun doing it?" },
+  { id: "niet", kop: "Probably not for you if…",
+    vraag: "What kind of people would this work not suit?" },
+  { id: "tips", kop: "Tips",
+    vraag: "Any other tips, or anything else you'd like to share about this job?" },
+];
+
+const isVoorbeeld = () =>
+  new URLSearchParams(location.search).get("voorbeeld") === "1"
+  && /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+
+/* ── het formulier voor alumni ─────────────────────────────────────── */
+function initVerhaal() {
+  const kaart = $("#verhaal");
+  if (!kaart) return;
+  const token = new URLSearchParams(location.search).get("t") || "";
+
+  const toon = (titel, tekst, extra) => {
+    kaart.innerHTML = `<h1>${titel}</h1><p>${tekst}</p>${extra || ""}`;
+  };
+  const geenLink = () => toon(
+    "This link does not work",
+    `It may have expired. Write to <a href="mailto:${CONTACT_MAIL}">${CONTACT_MAIL}</a>
+     and we'll send you a new one.`,
+  );
+
+  if (isVoorbeeld()) {
+    return bouw({
+      ok: true, voornaam: "Vince", werk: "EnergieStudent", eerder: "",
+      studie: "BSc Global Sustainability Science", antwoorden: {}, publiceren: false,
+    });
+  }
+  if (!FORM_ENDPOINT || !token) return geenLink();
+  fetch(FORM_ENDPOINT + "?verhaal=" + encodeURIComponent(token), { cache: "no-store" })
+    .then((r) => r.json())
+    .catch(() => null)
+    .then((d) => (d && d.ok ? bouw(d) : geenLink()));
+
+  function bouw(d) {
+    const veld = (id, label, waarde) =>
+      `<div><label for="vh-${id}">${label}</label>
+       <input id="vh-${id}" value="${esc(waarde || "")}" /></div>`;
+    const vragen = ALUMNI_VRAGEN.map((v) => `
+      <div class="vh-vraag">
+        <label for="vh-q-${v.id}">${esc(v.vraag)}</label>
+        ${v.hint ? `<p class="rt-hint">${esc(v.hint)}</p>` : ""}
+        <textarea id="vh-q-${v.id}" rows="4">${esc((d.antwoorden || {})[v.id] || "")}</textarea>
+      </div>`).join("");
+
+    toon(
+      `Hi ${esc(d.voornaam || "there")}, what is your work really like?`,
+      "Answer as many or as few questions as you like. Even one answer helps a student.",
+      `<div class="vh-bekend">
+         <div class="vh-bekend-kop">What we already know</div>
+         <p class="rt-hint">Out of date? Just change it.</p>
+         <div class="form-stack">
+           ${veld("werk", "Current work", d.werk)}
+           ${veld("eerder", "Previous role", d.eerder)}
+           ${veld("studie", "Studies", d.studie)}
+         </div>
+       </div>
+       <div class="form-stack vh-vragen">${vragen}</div>
+       <label class="vh-akkoord">
+         <input type="checkbox" id="vh-publiceren"${d.publiceren ? " checked" : ""} />
+         <span>You may publish my answers on the Impact Connect website, without my name and without the name of my employer.</span>
+       </label>
+       <p class="rt-hint">Leave this unticked and your answers stay with the Impact Connect team only.</p>
+       <p class="rt-fout" id="vh-fout" hidden></p>
+       <button class="btn-next" id="vh-knop" type="button">Send</button>`,
+    );
+
+    const knop = $("#vh-knop");
+    knop.addEventListener("click", () => {
+      const antwoorden = {};
+      let iets = false;
+      ALUMNI_VRAGEN.forEach((v) => {
+        const t = $("#vh-q-" + v.id).value.trim();
+        antwoorden[v.id] = t;
+        if (t) iets = true;
+      });
+      const fout = $("#vh-fout");
+      if (!iets) {
+        fout.textContent = "Please answer at least one question.";
+        fout.hidden = false;
+        return;
+      }
+      fout.hidden = true;
+      const bedankt = (publiceren) => toon(
+        "Thank you!",
+        publiceren
+          ? "We'll read your answers and put them on our website without your name or employer. Want to add something later? Just use the same link again."
+          : "Your answers stay with our team. Want to add something later? Just use the same link again.",
+      );
+      const publiceren = $("#vh-publiceren").checked;
+      if (isVoorbeeld()) return bedankt(publiceren);
+
+      knop.disabled = true;
+      knop.textContent = "Sending…";
+      sendFormAntwoord({
+        formulier: "alumniverhaal",
+        token,
+        werk: $("#vh-werk").value,
+        eerder: $("#vh-eerder").value,
+        studie: $("#vh-studie").value,
+        antwoorden,
+        publiceren,
+      }, 15000).then((a) => {
+        if (a && a.ok) return bedankt(publiceren);
+        knop.disabled = false;
+        knop.textContent = "Send";
+        fout.textContent = a === undefined
+          ? "We did not get a confirmation. Please press Send once more, sending it twice is no problem."
+          : a && a.reden === "link"
+            ? "This link no longer works. Please write to " + CONTACT_MAIL + "."
+            : "That did not go through. Please try again in a moment.";
+        fout.hidden = false;
+      });
+    });
+  }
+}
+
+/* ── de verhalen op paths.html ─────────────────────────────────────── */
+const VOORBEELD_VERHALEN = [
+  { als: "Sustainability consultant at a mid-sized consultancy", richting: "Consultancy",
+    antwoorden: {
+      dag: "VOORBEELD. Most days are a mix of client calls in the morning and analysis in the afternoon. I work from home twice a week.",
+      pad: "VOORBEELD. I did a student board year, then a thesis internship at a consultancy, and they asked me to stay.",
+      niet: "VOORBEELD. If you want to go deep into one topic for months, this can feel rushed.",
+    } },
+  { als: "Data analyst at a public organisation", richting: "Data",
+    antwoorden: {
+      dag: "VOORBEELD. Mostly behind my screen, with one or two meetings a day to hear what colleagues need.",
+      skills: "VOORBEELD. Python and SQL every day. I learned to explain numbers to people who don't like numbers.",
+      leuk: "VOORBEELD. Puzzling. You have to enjoy finding out why a number looks wrong.",
+    } },
+];
+
+function initPaths() {
+  const lijst = $("#paths-lijst");
+  const filter = $("#paths-filter");
+  if (!lijst) return;
+  let verhalen = [];
+  let richting = "";
+
+  const leeg = () => {
+    lijst.innerHTML = `<p class="paths-leeg">Alumni stories will appear here soon.</p>`;
+    if (filter) filter.innerHTML = "";
+  };
+
+  function teken() {
+    const zichtbaar = richting ? verhalen.filter((v) => v.richting === richting) : verhalen;
+    lijst.innerHTML = zichtbaar.map((v) => `
+      <article class="path-card reveal">
+        <div class="pc-kop">
+          ${v.richting ? `<span class="path-richting">${esc(v.richting)}</span>` : ""}
+          <h2>${esc(v.als)}</h2>
+        </div>
+        ${ALUMNI_VRAGEN.filter((q) => v.antwoorden[q.id]).map((q) => `
+          <div class="path-blok">
+            <h3>${esc(q.kop)}</h3>
+            <p>${esc(v.antwoorden[q.id])}</p>
+          </div>`).join("")}
+      </article>`).join("");
+    initReveal(lijst);
+  }
+
+  function tekenFilter() {
+    if (!filter) return;
+    const richtingen = [...new Set(verhalen.map((v) => v.richting).filter(Boolean))];
+    if (richtingen.length < 2) { filter.innerHTML = ""; return; }
+    filter.innerHTML = ["", ...richtingen].map((r) =>
+      `<button class="chip${r === richting ? " on" : ""}" type="button" data-richting="${esc(r)}">${r ? esc(r) : "All"}</button>`).join("");
+    $$("[data-richting]", filter).forEach((b) => b.addEventListener("click", () => {
+      richting = b.dataset.richting;
+      tekenFilter();
+      teken();
+    }));
+  }
+
+  const zet = (lijstje) => {
+    verhalen = lijstje || [];
+    if (!verhalen.length) return leeg();
+    tekenFilter();
+    teken();
+  };
+
+  if (isVoorbeeld()) return zet(VOORBEELD_VERHALEN);
+  if (!FORM_ENDPOINT) return leeg();
+  fetch(FORM_ENDPOINT + "?lijst=verhalen", { cache: "no-store" })
+    .then((r) => r.json())
+    .catch(() => null)
+    .then((d) => zet(d && d.ok ? d.verhalen : []));
 }
 
 function initMenu() {

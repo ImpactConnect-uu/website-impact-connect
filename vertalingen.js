@@ -75,6 +75,12 @@ const VERTALINGEN = {
   "partners.site":      { en: "Visit website", nl: "Naar de website" },
   "partners.event":     { en: "Upcoming event", nl: "Komend event" },
   "ev.partner":         { en: "Partner event", nl: "Partnerevent" },
+
+  // paths.html, de alumniverhalen
+  "paths.kop":          { nl: "Paden<i>.</i>" },
+  "paths.lead":         { nl: "Hoe ziet een baan in consultancy, data of beleid er echt uit? Alumni vertellen over hun werkdag, hoe ze er kwamen en bij wie het werk past. Anoniem, in hun eigen woorden." },
+  "paths.cta.kop":      { nl: "Meer horen over een baan als deze?" },
+  "paths.cta.tekst":    { nl: "Vraag ons om een introductie bij een van onze alumni. Je praat zelf met ze, en jij bepaalt wat je vraagt." },
   "partners.event.knop": { en: "Sign up", nl: "Aanmelden" },
   "nav.appointment":   { nl: "Plan een afspraak", en: "Plan an appointment" },
   "nav.menu":         { en: "Open the menu", nl: "Open het menu" },
