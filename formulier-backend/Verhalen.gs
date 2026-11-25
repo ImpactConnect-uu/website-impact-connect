@@ -20,14 +20,16 @@
    De mail versturen gaat in drie stappen, in de Apps Script-editor:
      testVerhaalMail()       alleen naar het testprofiel in de alumnisheet
      toonVerhaalWachtrij()   wie hem zou krijgen, zonder iets te versturen
-     stuurVerhaalMails()     echt naar iedereen. Werkt pas als
+     stuurVerhaalMails()     echt naar iedereen, meteen. Werkt pas als
                              VERHAAL_MAILS_AAN hieronder op true staat.
+   Of in plaats van die laatste: planVerhaalMailsMorgen() verstuurt de ronde
+   morgen om 09:30, één keer; annuleerVerhaalMails() zet dat weer uit.
    Wie de mail al kreeg, krijgt hem nooit een tweede keer.
    =================================================================== */
 
 /* Staat bewust uit. Pas op true zetten (en pushen) als jullie de mail
    hebben getest en akkoord zijn. Dan pas doet stuurVerhaalMails() iets. */
-const VERHAAL_MAILS_AAN = false;
+const VERHAAL_MAILS_AAN = true;          // aangezet op 25 november 2026
 
 const VERHAAL_TABBLAD = 'Alumni verhalen';
 const VERHAAL_LINK_DAGEN = 180;          // zo lang werkt de link in de mail
@@ -406,4 +408,65 @@ function stuurVerhaalMails() {
     return false;
   });
   console.log(verstuurd + ' mail(s) verstuurd.');
+  return verstuurd;
+}
+
+/* ---- één keer inplannen -------------------------------------------
+   planVerhaalMailsMorgen() zet een wekker voor morgen om 09:30. Op dat
+   moment draait verhaalMailsGepland(): die stuurt de ronde, haalt de wekker
+   daarna weg en mailt contact@ hoeveel er de deur uit gingen. Bedenk je je
+   nog, draai dan annuleerVerhaalMails().
+   ------------------------------------------------------------------- */
+const VERHAAL_PLAN_UUR = '09:30';
+
+function planVerhaalMailsMorgen() {
+  if (!VERHAAL_MAILS_AAN) {
+    console.log('VERHAAL_MAILS_AAN staat op false. Er is niets ingepland.');
+    return;
+  }
+  verhaalWekkersWeg();                      // nooit twee wekkers tegelijk
+  const tz = Session.getScriptTimeZone();
+  const morgen = new Date(Date.now() + 24 * 3600 * 1000);
+  const dag = Utilities.formatDate(morgen, tz, 'yyyy-MM-dd');
+  const verschil = Utilities.formatDate(morgen, tz, 'XXX');      // bijvoorbeeld +01:00
+  const wanneer = new Date(dag + 'T' + VERHAAL_PLAN_UUR + ':00' + verschil);
+  ScriptApp.newTrigger('verhaalMailsGepland').timeBased().at(wanneer).create();
+  console.log('Ingepland voor ' + Utilities.formatDate(wanneer, tz, 'EEEE d MMMM yyyy, HH:mm')
+    + '. ' + verhaalWachtrij().length + ' alumni krijgen dan de mail.');
+}
+
+function verhaalMailsGepland() {
+  verhaalWekkersWeg();
+  const verstuurd = stuurVerhaalMails() || 0;
+  const over = verhaalWachtrij().length;
+  try {
+    MailApp.sendEmail({
+      to: ONTVANGER,
+      subject: 'Mail over alumniverhalen verstuurd: ' + verstuurd + ' alumni',
+      name: 'Website ' + AFZENDERNAAM,
+      body: [
+        'De ingeplande mail over hun werk is vanochtend naar ' + verstuurd + ' alumni gegaan.',
+        over ? over + ' alumni hebben hem nog niet gekregen (dagquotum of een fout). Draai '
+          + 'stuurVerhaalMails() in de editor nog een keer, dan gaat hij verder.'
+          : 'Iedereen op de lijst heeft hem nu.',
+        '',
+        'De antwoorden komen in het tabblad "' + VERHAAL_TABBLAD + '".',
+      ].join('\n'),
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function annuleerVerhaalMails() {
+  const weg = verhaalWekkersWeg();
+  console.log(weg ? 'De ingeplande verzending is geannuleerd.' : 'Er stond niets ingepland.');
+}
+
+function verhaalWekkersWeg() {
+  const oud = ScriptApp.getProjectTriggers().filter(function (t) {
+    return t.getHandlerFunction() === 'verhaalMailsGepland';
+  });
+  oud.forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  return oud.length;
 }
