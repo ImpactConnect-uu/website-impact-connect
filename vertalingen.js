@@ -59,6 +59,7 @@ const VERTALINGEN = {
   "nav.internships":   { nl: "Stages" },
   "nav.about":         { nl: "Over ons" },
   "nav.partners":      { nl: "Partners" },
+  "nav.paths":         { nl: "Paden" },
 
   // Partners: de pagina partners.html en de strook onderaan elke pagina.
   // Wat script.js zelf maakt heeft en: én nl nodig, anders staat er "null".
