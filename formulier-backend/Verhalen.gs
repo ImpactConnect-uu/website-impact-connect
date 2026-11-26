@@ -154,6 +154,13 @@ function verhaalOpslaan(d) {
   });
   if (!ingevuld) return antwoord({ ok: false, reden: 'leeg' });
 
+  // Een voorstel voor de twee kolommen die jullie anders zelf invullen. Alleen
+  // in een lege cel: wat jullie er al in typten blijft staan.
+  const voorstel = {
+    'Op de site als': rolZonderWerkgever(waarden['Huidige baan']),
+    'Richting': richtingVan(waarden['Huidige baan'], a.interessesRuw),
+  };
+
   let gelukt = false;
   let tweedeKeer = false;
   metSlot(function () {
@@ -168,22 +175,92 @@ function verhaalOpslaan(d) {
         const i = oud.kop.indexOf(naam);
         if (i !== -1) blad.getRange(oud.nummer, i + 1).setValue(waarden[naam]);
       });
+      vulLegeCellen(blad, oud.nummer, oud.kop, voorstel);
     } else {
       const kop = verhaalKop(blad);
+      const alles = Object.assign({}, voorstel, waarden);
       blad.appendRow(kop.map(function (naam) {
-        return waarden[naam] === undefined ? '' : waarden[naam];
+        return alles[naam] === undefined ? '' : alles[naam];
       }));
     }
     gelukt = true;
   });
   if (!gelukt) return antwoord({ ok: false, reden: 'sheet' });
 
-  meldVerhaal(waarden, ingevuld, tweedeKeer);
+  meldVerhaal(waarden, ingevuld, tweedeKeer, voorstel);
   return antwoord({ ok: true });
 }
 
+/* ---- het voorstel voor "Op de site als" en "Richting" ---------------
+   In de mail aan alumni beloven we hun werkgever niet te noemen. Daarom de
+   rol zonder alles na "at", "bij", "for" of "@": "Research scientist at TNO"
+   wordt "Research scientist". Staat er maar één woord, dan is dat meestal een
+   bedrijfsnaam ("EnergieStudent") en blijft de cel leeg. Lees hem dus altijd
+   na voordat je "Op de site" op yes zet. */
+function rolZonderWerkgever(werk) {
+  const ruw = String(werk || '').replace(/\s+/g, ' ').trim();
+  if (!ruw) return '';
+  const delen = ruw.split(/\s+(?:at|bij|for|voor)\s+|\s*@\s*|\s+[|–-]\s+/i);
+  const rol = delen[0].replace(/[,;:]+$/, '').trim();
+  // Eén los woord: een herkenbare functie ("Teacher", "Consultant") houden we,
+  // een woord met een hoofdletter middenin ("EnergieStudent") is een merknaam.
+  if (delen.length === 1 && rol.indexOf(' ') === -1) {
+    const isFunctie = groepeerThemas(rol).length && !/[a-z][A-Z]/.test(rol);
+    if (!isFunctie) return '';
+  }
+  return rol.charAt(0).toUpperCase() + rol.slice(1);
+}
+
+/* De richting met dezelfde thema's als de alumnipagina (THEMAS in Loket.gs).
+   Eerst op de baan, anders op de interessegebieden. De volgorde hieronder
+   bepaalt wat wint als er meer passen: het soort werk gaat voor het onderwerp.
+   "Choosing a master's" en "Job hunting" gaan niet over een baan en tellen
+   hier niet mee. */
+const RICHTING_VOORRANG = ['Consultancy', 'IT & data', 'Engineering', 'Finance', 'Law',
+  'Health', 'Education', 'Research & PhD', 'Policy & government', 'Entrepreneurship',
+  'Marketing & communications', 'Sustainability', 'Working abroad'];
+
+function richtingVan(werk, interesses) {
+  const kies = function (tekst) {
+    // "Utrecht" bevat "recht" en zou anders altijd Law opleveren.
+    const gevonden = groepeerThemas(String(tekst || '').replace(/utrecht/gi, ' '));
+    return RICHTING_VOORRANG.filter(function (r) { return gevonden.indexOf(r) !== -1; })[0] || '';
+  };
+  // Eerst de rol zelf, dan de hele baan met werkgever, dan de interesses.
+  return kies(rolZonderWerkgever(werk)) || kies(werk) || kies(interesses);
+}
+
+function vulLegeCellen(blad, nummer, kop, voorstel) {
+  Object.keys(voorstel).forEach(function (naam) {
+    const i = kop.indexOf(naam);
+    if (i === -1 || !voorstel[naam]) return;
+    const cel = blad.getRange(nummer, i + 1);
+    if (!String(cel.getValue()).trim()) cel.setValue(voorstel[naam]);
+  });
+}
+
+/* Voor de verhalen die al binnen waren voordat dit voorstel er was: vult in
+   elke regel een lege "Op de site als" en "Richting". Raakt niets anders aan. */
+function vulVerhaalKolommen() {
+  const blad = verhaalBlad();
+  if (!blad || blad.getLastRow() < 2) { console.log('Nog geen verhalen.'); return; }
+  const kop = verhaalKop(blad);
+  const alumni = {};
+  leesAlumni().forEach(function (a) { alumni[a.id] = a; });
+  const rijen = blad.getRange(2, 1, blad.getLastRow() - 1, kop.length).getValues();
+  rijen.forEach(function (rij, i) {
+    const werk = String(rij[kop.indexOf('Huidige baan')] || '');
+    const a = alumni[String(rij[kop.indexOf('Alumnus id')] || '').trim()] || {};
+    vulLegeCellen(blad, i + 2, kop, {
+      'Op de site als': rolZonderWerkgever(werk),
+      'Richting': richtingVan(werk, a.interessesRuw),
+    });
+  });
+  console.log(rijen.length + ' regel(s) nagelopen.');
+}
+
 /* Een kort bericht naar contact@, zodat geen verhaal ongezien blijft. */
-function meldVerhaal(w, ingevuld, tweedeKeer) {
+function meldVerhaal(w, ingevuld, tweedeKeer, voorstel) {
   try {
     MailApp.sendEmail({
       to: ONTVANGER,
@@ -194,10 +271,13 @@ function meldVerhaal(w, ingevuld, tweedeKeer) {
           + ' vragen over zijn of haar werk (' + (w['Huidige baan'] || 'baan onbekend') + ').',
         'Publiceren mag: ' + w['Mag op de site'] + '.',
         '',
-        'Lees het in het tabblad "' + VERHAAL_TABBLAD + '". Wil je het op de site, zet dan',
-        '"Op de site" op yes en typ bij "Op de site als" een anonieme omschrijving,',
-        'zonder naam of werkgever, bijvoorbeeld "Data analyst at a large consultancy".',
-        'Bij "Richting" kun je het een groep geven, zoals Consultancy of Data.',
+        'Het script stelt voor (alleen ingevuld als de cel nog leeg was):',
+        '  Op de site als: ' + ((voorstel || {})['Op de site als'] || '(niets, vul zelf in)'),
+        '  Richting: ' + ((voorstel || {})['Richting'] || '(niets, vul zelf in)'),
+        '',
+        'Lees het in het tabblad "' + VERHAAL_TABBLAD + '". Controleer bij "Op de site als"',
+        'dat er geen naam van een werkgever in staat; dat beloven we de alumni. Klopt',
+        'alles, zet dan "Op de site" op yes.',
       ].join('\n'),
     });
   } catch (err) {
