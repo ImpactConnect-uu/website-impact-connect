@@ -1886,7 +1886,7 @@ body::before {
 
 /* Paths: alle kaarten even hoog. Op de kaart het begin van het eerste
    antwoord; het hele verhaal staat in een venster (openVerhaalVenster). */
-.paths-lijst { align-items: stretch; }
+.paths-lijst { align-items: stretch; grid-auto-rows: 1fr; }   /* ook kaarten op een volgende rij even hoog */
 .path-card { display: flex; flex-direction: column; padding-bottom: 22px; }
 .path-card .path-blok { padding-bottom: 12px; }
 .path-kort {
