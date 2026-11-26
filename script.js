@@ -3774,6 +3774,42 @@ const VOORBEELD_VERHALEN = [
     } },
 ];
 
+/* Het hele verhaal in een venster, met alle beantwoorde vragen onder
+   elkaar. Sluiten met het kruisje, een klik ernaast of Escape. */
+function openVerhaalVenster(v) {
+  if (!v) return;
+  const wrap = document.createElement("div");
+  wrap.id = "path-pop-root";
+  wrap.innerHTML = `
+    <div class="path-pop-overlay" data-close></div>
+    <div class="path-pop" role="dialog" aria-label="${esc(v.als)}">
+      <div class="path-pop-kop">
+        ${v.richting ? `<span class="path-richting">${esc(v.richting)}</span>` : ""}
+        <button class="icon-btn" data-close aria-label="${t("sluiten")}">${icon("X", 17)}</button>
+        <h2>${esc(v.als)}</h2>
+      </div>
+      <div class="path-pop-body">
+        ${ALUMNI_VRAGEN.filter((q) => v.antwoorden[q.id]).map((q) => `
+          <div class="path-blok">
+            <h3>${esc(q.kop)}</h3>
+            <p>${esc(v.antwoorden[q.id])}</p>
+          </div>`).join("")}
+        <a class="path-pop-cta" href="alumni.html">${icon("UserCircle2", 17)} Talk to an alumnus in a job like this</a>
+      </div>
+    </div>`;
+  document.body.appendChild(wrap);
+  document.body.style.overflow = "hidden";
+  const sluit = () => {
+    wrap.remove();
+    document.body.style.overflow = "";
+    window.removeEventListener("keydown", esc_);
+  };
+  const esc_ = (e) => { if (e.key === "Escape") sluit(); };
+  $$("[data-close]", wrap).forEach((el) => el.addEventListener("click", sluit));
+  window.addEventListener("keydown", esc_);
+  $(".path-pop .icon-btn", wrap).focus();
+}
+
 function initPaths() {
   const lijst = $("#paths-lijst");
   const filter = $("#paths-filter");
@@ -3786,20 +3822,30 @@ function initPaths() {
     if (filter) filter.innerHTML = "";
   };
 
+  /* Op de kaart alleen het begin: de titel en het eerste antwoord, een paar
+     regels lang, plus welke onderwerpen er nog meer in staan. Zo zijn alle
+     kaarten even hoog. "Read the full story" opent het hele verhaal. */
   function teken() {
     const zichtbaar = richting ? verhalen.filter((v) => v.richting === richting) : verhalen;
-    lijst.innerHTML = zichtbaar.map((v) => `
-      <article class="path-card reveal">
+    lijst.innerHTML = zichtbaar.map((v, i) => {
+      const vragen = ALUMNI_VRAGEN.filter((q) => v.antwoorden[q.id]);
+      const eerste = vragen[0];
+      const rest = vragen.slice(1);
+      return `<article class="path-card reveal">
         <div class="pc-kop">
           ${v.richting ? `<span class="path-richting">${esc(v.richting)}</span>` : ""}
           <h2>${esc(v.als)}</h2>
         </div>
-        ${ALUMNI_VRAGEN.filter((q) => v.antwoorden[q.id]).map((q) => `
-          <div class="path-blok">
-            <h3>${esc(q.kop)}</h3>
-            <p>${esc(v.antwoorden[q.id])}</p>
-          </div>`).join("")}
-      </article>`).join("");
+        ${eerste ? `<div class="path-blok">
+          <h3>${esc(eerste.kop)}</h3>
+          <p class="path-kort">${esc(v.antwoorden[eerste.id])}</p>
+        </div>` : ""}
+        ${rest.length ? `<p class="path-ook"><b>Also in this story:</b> ${rest.map((q) => esc(q.kop)).join(" · ")}</p>` : ""}
+        <button class="path-meer" type="button" data-verhaal="${i}">Read the full story ${icon("ArrowRight", 15)}</button>
+      </article>`;
+    }).join("");
+    $$("[data-verhaal]", lijst).forEach((b) =>
+      b.addEventListener("click", () => openVerhaalVenster(zichtbaar[Number(b.dataset.verhaal)])));
     initReveal(lijst);
   }
 
