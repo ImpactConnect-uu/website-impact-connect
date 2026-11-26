@@ -2,7 +2,7 @@
 
 Dit document beschrijft stap voor stap wat er gebeurt bij elk van de drie diensten voor studenten. Het is bedoeld om in één keer door te lezen: wat doet de student, wat gaat vanzelf, en wat moeten wij zelf doen.
 
-**Laatst bijgewerkt:** 25 november 2026
+**Laatst bijgewerkt:** 26 november 2026
 
 **Houd dit bij.** Verandert er iets aan de werking, dan hoort die wijziging hier meteen in. Dat staat ook als afspraak in CLAUDE.md, in de repo van de website en in die van de WhatsApp-bot, zodat iedereen die met Claude Code aan een van beide werkt dit document bijwerkt in dezelfde beurt als de wijziging zelf.
 
@@ -141,7 +141,7 @@ Een student boekt zelf een gesprek, wij spreken hem, en daarna loopt de hele naz
 20. Alumni krijgen één keer een persoonlijke mail met wat we al van ze weten (huidige baan, eerdere rol, studie) en een knop naar hun eigen formulier. Daar beantwoorden ze zoveel van de zes vragen als ze willen: een gemiddelde werkdag, hoe ze er kwamen, skills, wat je leuk moet vinden, voor wie het niet past, en tips. Ze kunnen ook hun gegevens verbeteren.
 21. Onderaan zetten ze zelf een vinkje als het op de site mag, zonder naam en zonder werkgever. Dat vinkje staat standaard uit. Dezelfde link later opnieuw gebruiken werkt de antwoorden bij.
 22. De antwoorden komen in het tabblad **Alumni verhalen** van de bot-sheet, en contact@ krijgt bij elk verhaal een seintje.
-23. Op de pagina **Paths** (paths.html) komt een verhaal pas als drie dingen kloppen: de alumnus zette het vinkje, jullie zetten **Op de site** op yes, en jullie typten bij **Op de site als** een anonieme omschrijving, bijvoorbeeld "Data analyst at a large consultancy". Bij **Richting** kun je een groep invullen, zoals Consultancy of Data; dat worden de filterknoppen. Naam, mailadres en de baan zoals de alumnus die zelf schreef komen nooit op de site.
+23. Op de pagina **Paths** (paths.html) komt een verhaal pas als drie dingen kloppen: de alumnus zette het vinkje, jullie zetten **Op de site** op yes, en bij **Op de site als** staat een omschrijving van de rol zonder werkgever. Die vult het script zelf in als een verhaal binnenkomt: de huidige baan, met alles na "at", "bij", "for" of "@" eraf ("Research scientist at TNO" wordt "Research scientist"). Staat er alleen een bedrijfsnaam, dan blijft de cel leeg en typ je hem zelf. Lees hem altijd na voordat je yes zet: we beloven de alumni dat hun werkgever niet op de site komt. Ook **Richting** vult het script zelf in, met dezelfde thema's als op de alumnipagina; dat worden de filterknoppen. Wat jullie zelf in die twee kolommen typen blijft staan. Voor verhalen van voor 26 november 2026 vult vulVerhaalKolommen ze alsnog in. Naam, mailadres en de baan zoals de alumnus die zelf schreef komen nooit op de site.
 24. De site ververst de verhalen elke vijf minuten; wisVerhaalCache doet het meteen.
 25. Versturen doe je in de Apps Script-editor, in Verhalen.gs: eerst testVerhaalMail (alleen naar het testprofiel), dan toonVerhaalWachtrij (wie hem krijgt, zonder te versturen), en pas daarna stuurVerhaalMails (meteen) of planVerhaalMailsMorgen (de volgende ochtend om 09:30, één keer; contact@ krijgt daarna een mail met hoeveel er verstuurd zijn, en annuleerVerhaalMails zet de planning weer uit). Allebei werken alleen als VERHAAL_MAILS_AAN bovenin Verhalen.gs op true staat; dat is sinds 25 november 2026 zo. Niemand krijgt de mail twee keer.
 26. Paths staat nog niet in het menu. Dat komt als er genoeg verhalen goedgekeurd zijn.
