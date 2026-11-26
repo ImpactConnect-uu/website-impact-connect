@@ -222,8 +222,8 @@ const RICHTING_VOORRANG = ['Consultancy', 'IT & data', 'Engineering', 'Finance',
 
 function richtingVan(werk, interesses) {
   const kies = function (tekst) {
-    // "Utrecht" bevat "recht" en zou anders altijd Law opleveren.
-    const gevonden = groepeerThemas(String(tekst || '').replace(/utrecht/gi, ' '));
+    // groepeerThemas haalt zelf plaatsnamen als "Utrecht" eruit; zie Loket.gs.
+    const gevonden = groepeerThemas(String(tekst || ''));
     return RICHTING_VOORRANG.filter(function (r) { return gevonden.indexOf(r) !== -1; })[0] || '';
   };
   // Eerst de rol zelf, dan de hele baan met werkgever, dan de interesses.

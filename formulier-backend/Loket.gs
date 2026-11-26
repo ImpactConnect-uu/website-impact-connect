@@ -405,9 +405,16 @@ function raaktWoord(schoon, woord) {
   return new RegExp('(^|[^a-z0-9])' + veilig + '([^a-z0-9]|$)').test(schoon);
 }
 
+/* Plaatsnamen waar toevallig een trefwoord in zit. "Utrecht" en "Dordrecht"
+   bevatten "recht", en dan kreeg iedereen die Utrecht noemde het thema Law.
+   Ze gaan eruit voordat we naar thema's kijken. */
+function zonderPlaatsnamen(schoon) {
+  return schoon.replace(/\b(utrecht|dordrecht)\b/g, ' ');
+}
+
 function groepeerThemas(tekst) {
   if (!tekst) return [];
-  const schoon = plat(tekst);
+  const schoon = zonderPlaatsnamen(plat(tekst));
   return Object.keys(THEMAS).filter(function (thema) {
     return THEMAS[thema].some(function (w) { return raaktWoord(schoon, w); });
   });
@@ -421,7 +428,7 @@ function nietHerkend(tekst) {
     .map(function (f) { return f.trim(); })
     .filter(function (f) { return f.length > 2; })
     .filter(function (f) {
-      const schoon = plat(f);
+      const schoon = zonderPlaatsnamen(plat(f));
       return !Object.keys(THEMAS).some(function (thema) {
         return THEMAS[thema].some(function (w) { return raaktWoord(schoon, w); });
       });
